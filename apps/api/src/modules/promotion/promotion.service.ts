@@ -2,7 +2,6 @@ import {
 	BadRequestException,
 	Injectable,
 	InternalServerErrorException,
-	UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository, SelectQueryBuilder } from 'typeorm';
@@ -28,7 +27,6 @@ export class PromotionService {
 		total: number;
 	}> {
 		try {
-			this.ensureUser(userId);
 			this.validateQuery(query);
 
 			const page = query.page ?? PAGINATION_DEFAULTS.PAGE;
@@ -55,15 +53,6 @@ export class PromotionService {
 				});
 			}
 			throw error;
-		}
-	}
-
-	private ensureUser(userId: string): void {
-		if (!userId) {
-			throw new UnauthorizedException({
-				message: 'Unauthorized',
-				errorCode: ErrorCode.UNAUTHORIZED,
-			});
 		}
 	}
 

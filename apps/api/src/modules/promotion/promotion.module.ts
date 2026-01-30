@@ -3,9 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PromotionService } from './promotion.service';
 import { PromotionController } from './promotion.controller';
 import { Promotion } from './entities/promotion.entity';
+import { FavoriteModule } from '../favorite/favorite.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Promotion])],
+  imports: [TypeOrmModule.forFeature([Promotion]), FavoriteModule],
   controllers: [PromotionController],
   providers: [PromotionService],
 })
