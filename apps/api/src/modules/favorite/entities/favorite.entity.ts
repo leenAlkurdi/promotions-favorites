@@ -29,7 +29,9 @@ export class Favorite {
     @JoinColumn({ name: 'userId' })
     user: User;
 
-    @ManyToOne(() => Promotion, { nullable: false })
+    @ManyToOne(() => Promotion, (promotion) => promotion.favorites, {
+        nullable: false,
+    })
     @JoinColumn({ name: 'promotionId' })
     promotion: Promotion;
 

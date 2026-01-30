@@ -47,6 +47,9 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# SQLite database file (local only)
+apps/api/src/database/sqlite.db
+
 # Optional npm cache directory
 .npm
 

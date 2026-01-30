@@ -5,7 +5,7 @@ import { Promotion } from '../../modules/promotion/entities/promotion.entity';
 
 const DAYS = 24 * 60 * 60 * 1000;
 
-type PromotionSeed = Omit<Promotion, 'id' | 'createdAt'>;
+type PromotionSeed = Omit<Promotion, 'id' | 'createdAt' | 'favorites'>;
 
 const createPromotion = (
   title: string,
@@ -34,6 +34,8 @@ async function seed(): Promise<void> {
 
   try {
     await dataSource.initialize();
+    logger.log('Running migrations...');
+    await dataSource.runMigrations();
 
     const userRepo = dataSource.getRepository(User);
     const promoRepo = dataSource.getRepository(Promotion);

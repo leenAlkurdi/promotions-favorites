@@ -1,17 +1,17 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class CreateInitialSchema1769796374872 implements MigrationInterface {
-    name = 'CreateInitialSchema1769796374872'
+export class CreateInitialSchema1769807343977 implements MigrationInterface {
+    name = 'CreateInitialSchema1769807343977'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "users" ("id" varchar PRIMARY KEY NOT NULL, "username" varchar NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')))`);
+        await queryRunner.query(`CREATE TABLE "favorites" ("id" varchar PRIMARY KEY NOT NULL, "userId" varchar NOT NULL, "promotionId" varchar NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_17957422afffdd03153c02200df" UNIQUE ("userId", "promotionId"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_d2d86946b141fbad353bf3100a" ON "favorites" ("promotionId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_e747534006c6e3c2f09939da60" ON "favorites" ("userId") `);
         await queryRunner.query(`CREATE TABLE "promotions" ("id" varchar PRIMARY KEY NOT NULL, "title" varchar NOT NULL, "merchant" varchar NOT NULL, "rewardAmount" decimal NOT NULL, "rewardCurrency" varchar NOT NULL, "description" text NOT NULL, "terms" text NOT NULL, "thumbnailUrl" varchar NOT NULL, "expiresAt" datetime NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')))`);
         await queryRunner.query(`CREATE INDEX "IDX_353cd78dcad77393c543b7546e" ON "promotions" ("expiresAt") `);
         await queryRunner.query(`CREATE INDEX "IDX_be31c5e45be0f05efbc9e475dc" ON "promotions" ("merchant") `);
         await queryRunner.query(`CREATE INDEX "IDX_3243efaabeff8c2a7ea262169b" ON "promotions" ("title") `);
-        await queryRunner.query(`CREATE TABLE "favorites" ("id" varchar PRIMARY KEY NOT NULL, "userId" varchar NOT NULL, "promotionId" varchar NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), CONSTRAINT "UQ_17957422afffdd03153c02200df" UNIQUE ("userId", "promotionId"))`);
-        await queryRunner.query(`CREATE INDEX "IDX_d2d86946b141fbad353bf3100a" ON "favorites" ("promotionId") `);
-        await queryRunner.query(`CREATE INDEX "IDX_e747534006c6e3c2f09939da60" ON "favorites" ("userId") `);
         await queryRunner.query(`CREATE TABLE "audit_events" ("id" varchar PRIMARY KEY NOT NULL, "userId" varchar NOT NULL, "promotionId" varchar NOT NULL, "action" varchar NOT NULL, "timestamp" datetime NOT NULL DEFAULT (datetime('now')))`);
         await queryRunner.query(`CREATE INDEX "IDX_eb146ea40af54a3564a45dbce7" ON "audit_events" ("timestamp") `);
         await queryRunner.query(`CREATE INDEX "IDX_6648016e6e3596e3613bffe927" ON "audit_events" ("promotionId") `);
@@ -39,13 +39,13 @@ export class CreateInitialSchema1769796374872 implements MigrationInterface {
         await queryRunner.query(`DROP INDEX "IDX_6648016e6e3596e3613bffe927"`);
         await queryRunner.query(`DROP INDEX "IDX_eb146ea40af54a3564a45dbce7"`);
         await queryRunner.query(`DROP TABLE "audit_events"`);
-        await queryRunner.query(`DROP INDEX "IDX_e747534006c6e3c2f09939da60"`);
-        await queryRunner.query(`DROP INDEX "IDX_d2d86946b141fbad353bf3100a"`);
-        await queryRunner.query(`DROP TABLE "favorites"`);
         await queryRunner.query(`DROP INDEX "IDX_3243efaabeff8c2a7ea262169b"`);
         await queryRunner.query(`DROP INDEX "IDX_be31c5e45be0f05efbc9e475dc"`);
         await queryRunner.query(`DROP INDEX "IDX_353cd78dcad77393c543b7546e"`);
         await queryRunner.query(`DROP TABLE "promotions"`);
+        await queryRunner.query(`DROP INDEX "IDX_e747534006c6e3c2f09939da60"`);
+        await queryRunner.query(`DROP INDEX "IDX_d2d86946b141fbad353bf3100a"`);
+        await queryRunner.query(`DROP TABLE "favorites"`);
         await queryRunner.query(`DROP TABLE "users"`);
     }
 

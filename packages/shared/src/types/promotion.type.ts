@@ -8,5 +8,4 @@ export type Promotion = {
     terms: string;
     thumbnailUrl: string;
     expiresAt: string;
-    isFavorite?: boolean;
 }

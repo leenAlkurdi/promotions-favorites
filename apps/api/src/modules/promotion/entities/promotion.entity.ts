@@ -3,8 +3,10 @@ import {
 	CreateDateColumn,
 	Entity,
 	Index,
+	OneToMany,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Favorite } from '../../favorite/entities/favorite.entity';
 
 @Entity('promotions')
 @Index(['title'])
@@ -40,6 +42,9 @@ export class Promotion {
 
 	@CreateDateColumn({ type: 'datetime' })
 	createdAt: Date;
+
+	@OneToMany(() => Favorite, (favorite) => favorite.promotion)
+	favorites: Favorite[];
 
 	
 }
