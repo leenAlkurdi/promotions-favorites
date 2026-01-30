@@ -5,6 +5,5 @@ export type AuditEvent = {
     userId: string;
     promotionId: string;
     action: AuditAction;
-    createdAt: string;
-    updatedAt: string;
+    timestamp: string;
 }
