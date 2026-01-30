@@ -33,15 +33,16 @@
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.2.0",
     "@nestjs/typeorm": "^11.0.0",
-    "@promotions-favorites/shared": "workspace:*",
+    "@promotions-favorites/shared": "file:../../packages/shared",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
     "pg": "^8.17.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "sqlite3": "^5.1.7",
-    "swagger": "^0.0.1",
+    "swagger-ui-express": "^5.0.0",
     "typeorm": "^0.3.28"
   },
   "devDependencies": {
