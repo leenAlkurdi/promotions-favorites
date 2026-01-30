@@ -6,6 +6,6 @@ dotenv.config();
 export default new DataSource({
   type: 'sqlite',
   database: process.env.DB_DATABASE || './database/sqlite.db',
-  entities: ['dist/**/*.entity.js'],
-  migrations: ['dist/database/migrations/*.js'],
+  entities: ['src/**/*.entity.ts'],
+  migrations: ['src/database/migrations/*.ts'],
 });

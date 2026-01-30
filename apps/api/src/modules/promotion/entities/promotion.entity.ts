@@ -2,10 +2,14 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	Index,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('promotions')
+@Index(['title'])
+@Index(['merchant'])
+@Index(['expiresAt'])
 export class Promotion {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
@@ -36,4 +40,6 @@ export class Promotion {
 
 	@CreateDateColumn({ type: 'datetime' })
 	createdAt: Date;
+
+	
 }
