@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 import { Favorite } from './entities/favorite.entity';
 import { Promotion } from '../promotion/entities/promotion.entity';
-import { AuditEvent } from '../audit-event/entities/audit-event.entity';
+import { AuditEventService } from '../audit-event/audit-event.service';
 import { GetFavoritesQueryDto } from './dtos/get-favorites-query.dto';
 import { PAGINATION_DEFAULTS } from '@promotions-favorites/shared/constants';
 import {
@@ -24,8 +24,7 @@ export class FavoriteService {
 		private readonly favoriteRepo: Repository<Favorite>,
 		@InjectRepository(Promotion)
 		private readonly promotionRepo: Repository<Promotion>,
-		@InjectRepository(AuditEvent)
-		private readonly auditRepo: Repository<AuditEvent>,
+		private readonly auditService: AuditEventService,
 	) {}
 
 	async addFavorite(
@@ -44,13 +43,12 @@ export class FavoriteService {
 				await this.favoriteRepo.manager.transaction(async (manager) => {
 					const favorite = manager.create(Favorite, { userId, promotionId });
 					await manager.save(Favorite, favorite);
-
-					const audit = manager.create(AuditEvent, {
+					await this.auditService.logEvent(
 						userId,
 						promotionId,
-						action: AuditAction.FAVORITE,
-					});
-					await manager.save(AuditEvent, audit);
+						AuditAction.FAVORITE,
+						manager,
+					);
 				});
 			}
 
@@ -80,13 +78,12 @@ export class FavoriteService {
 			if (existing) {
 				await this.favoriteRepo.manager.transaction(async (manager) => {
 					await manager.remove(Favorite, existing);
-
-					const audit = manager.create(AuditEvent, {
+					await this.auditService.logEvent(
 						userId,
 						promotionId,
-						action: AuditAction.UNFAVORITE,
-					});
-					await manager.save(AuditEvent, audit);
+						AuditAction.UNFAVORITE,
+						manager,
+					);
 				});
 			}
 
