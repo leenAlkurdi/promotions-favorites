@@ -15,7 +15,9 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "pretest": "npm run build --workspace=@promotions-favorites/shared",
     "test": "jest",
+    "pretest:e2e": "npm run build --workspace=@promotions-favorites/shared",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -84,6 +86,10 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@promotions-favorites/shared$": "<rootDir>/../../../packages/shared/dist/index.js",
+      "^@promotions-favorites/shared/(.*)$": "<rootDir>/../../../packages/shared/dist/$1/index.js"
+    }
   }
 }
