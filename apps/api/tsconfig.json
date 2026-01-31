@@ -12,8 +12,12 @@
     "rootDir": "./src",
     "baseUrl": "./",
     "paths": {
-      "@promotions-favorites/shared": ["../../packages/shared/dist/index"],
-      "@promotions-favorites/shared/*": ["../../packages/shared/dist/*/index"]
+      "@promotions-favorites/shared": [
+        "../../packages/shared/dist/index"
+      ],
+      "@promotions-favorites/shared/*": [
+        "../../packages/shared/dist/*/index"
+      ]
     },
     "incremental": true,
     "skipLibCheck": true,
