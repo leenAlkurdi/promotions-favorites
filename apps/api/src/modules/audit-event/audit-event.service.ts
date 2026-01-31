@@ -14,10 +14,11 @@ export class AuditEventService {
 		userId: string,
 		promotionId: string,
 		action: string,
+		traceId?: string,
 		manager?: EntityManager,
 	): Promise<void> {
 		const repo = manager ? manager.getRepository(AuditEvent) : this.auditRepo;
-		const audit = repo.create({ userId, promotionId, action });
+		const audit = repo.create({ userId, promotionId, action, traceId });
 		await repo.save(audit);
 	}
 }

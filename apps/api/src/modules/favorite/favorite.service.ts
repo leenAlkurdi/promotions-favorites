@@ -30,6 +30,7 @@ export class FavoriteService {
 	async addFavorite(
 		userId: string,
 		promotionId: string,
+		traceId?: string,
 	): Promise<PromotionWithFavorite> {
 		try {
 			const promotion = await this.findPromotionOrThrow(promotionId);
@@ -47,6 +48,7 @@ export class FavoriteService {
 						userId,
 						promotionId,
 						AuditAction.FAVORITE,
+						traceId,
 						manager,
 					);
 				});
@@ -67,6 +69,7 @@ export class FavoriteService {
 	async removeFavorite(
 		userId: string,
 		promotionId: string,
+		traceId?: string,
 	): Promise<PromotionWithFavorite> {
 		try {
 			const promotion = await this.findPromotionOrThrow(promotionId);
@@ -82,6 +85,7 @@ export class FavoriteService {
 						userId,
 						promotionId,
 						AuditAction.UNFAVORITE,
+						traceId,
 						manager,
 					);
 				});
@@ -132,17 +136,17 @@ export class FavoriteService {
 				.take(limit);
 
 			const [favorites, totalFavorites] = await favoritesQb.getManyAndCount();
+			const now = Date.now();
 
 			const totals = await this.favoriteRepo
 				.createQueryBuilder('favorite')
 				.innerJoin('favorite.promotion', 'promotion')
 				.select('COALESCE(SUM(promotion.rewardAmount), 0)', 'total')
 				.where('favorite.userId = :userId', { userId })
+				.andWhere('promotion.expiresAt >= :now', { now: new Date(now) })
 				.getRawOne<{ total: string | number }>();
 
 			const totalPotentialRewards = Number(totals?.total ?? 0);
-
-			const now = Date.now();
 			const active: PromotionWithFavorite[] = [];
 			const expired: PromotionWithFavorite[] = [];
 
@@ -158,6 +162,10 @@ export class FavoriteService {
 			}
 
 			const hasNextPage = offset + favorites.length < totalFavorites;
+			const lastFavorite = favorites.at(-1);
+			const nextCursor = hasNextPage && lastFavorite?.promotion
+				? `${new Date(lastFavorite.promotion.expiresAt).toISOString()}|${lastFavorite.promotion.id}`
+				: null;
 
 			return {
 				active,
@@ -167,7 +175,7 @@ export class FavoriteService {
 					limit,
 					totalFavorites,
 					totalPotentialRewards,
-					nextPageCursor: hasNextPage ? String(page + 1) : null,
+					nextPageCursor: nextCursor,
 				},
 			};
 		} catch (error) {

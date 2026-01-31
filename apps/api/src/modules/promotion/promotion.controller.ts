@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -15,6 +15,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { FavoriteService } from '../favorite/favorite.service';
 import { FavoriteParamsDto } from '../favorite/dtos/favorite-params.dto';
 import { GetFavoritesQueryDto } from '../favorite/dtos/get-favorites-query.dto';
+import { Request } from 'express';
 
 type CurrentUserPayload = {
   id: string;
@@ -51,8 +52,13 @@ export class PromotionController {
   addFavorite(
     @Param() params: FavoriteParamsDto,
     @CurrentUser() user: CurrentUserPayload,
+    @Req() req: Request & { traceId?: string },
   ) {
-    return this.favoriteService.addFavorite(user.id, params.promotionId);
+    return this.favoriteService.addFavorite(
+      user.id,
+      params.promotionId,
+      req.traceId,
+    );
   }
 
   @Delete(':promotionId/favorite')
@@ -65,8 +71,13 @@ export class PromotionController {
   removeFavorite(
     @Param() params: FavoriteParamsDto,
     @CurrentUser() user: CurrentUserPayload,
+    @Req() req: Request & { traceId?: string },
   ) {
-    return this.favoriteService.removeFavorite(user.id, params.promotionId);
+    return this.favoriteService.removeFavorite(
+      user.id,
+      params.promotionId,
+      req.traceId,
+    );
   }
 
   @Get('favorites')

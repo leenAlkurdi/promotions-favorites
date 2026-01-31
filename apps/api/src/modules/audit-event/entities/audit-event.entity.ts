@@ -23,6 +23,9 @@ export class AuditEvent {
 	@Column()
 	action: string;
 
+	@Column({ nullable: true })
+	traceId?: string;
+
 	@CreateDateColumn({ type: 'datetime' })
 	timestamp: Date;
 }

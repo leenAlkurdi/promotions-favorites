@@ -41,6 +41,7 @@ describe('AuditEventService', () => {
       userId: 'user-1',
       promotionId: 'promo-1',
       action: 'FAVORITE',
+      traceId: undefined,
     });
     expect(auditRepo.save).toHaveBeenCalled();
   });
