@@ -1,3 +1,5 @@
+import { LanguageToggle } from "@/components/LanguageToggle";
+
 export default function Home() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-white px-6 text-center text-zinc-900">
@@ -6,6 +8,10 @@ export default function Home() {
         <p className="text-base text-zinc-600">
           Frontend setup complete. Next step: build promotions and favorites UI.
         </p>
+        <div className="flex justify-center pt-4">
+          <LanguageToggle />
+        </div>
+
       </div>
     </main>
   );
