@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/leenAlkurdi/promotions-favorites/issues"
   },
-  "homepage": "https://github.com/leenAlkurdi/promotions-favorites#readme"
+  "homepage": "https://github.com/leenAlkurdi/promotions-favorites#readme",
+  "devDependencies": {
+    "@next/swc-win32-x64-msvc": "^16.1.6"
+  }
 }
