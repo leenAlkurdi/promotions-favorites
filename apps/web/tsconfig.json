@@ -30,7 +30,7 @@
         "../../packages/shared/dist/index"
       ],
       "@promotions-favorites/shared/*": [
-        "../../packages/shared/dist/*/index"
+        "../../packages/shared/dist/*"
       ]
     }
   },
