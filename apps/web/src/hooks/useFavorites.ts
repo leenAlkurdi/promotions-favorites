@@ -1,3 +1,4 @@
+"use client";
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { getFavorites } from '../services/promotionsApi';
 import { FavoritesResponse } from '@promotions-favorites/shared';

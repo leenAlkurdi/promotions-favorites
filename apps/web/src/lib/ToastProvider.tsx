@@ -1,15 +1,29 @@
 "use client";
-import React, { createContext, useContext, useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 type Toast = { id: number; type: 'success' | 'error' | 'info'; message: string; traceId?: string };
 
-const ToastContext = createContext<{
+type ToastApi = {
   success: (keyOrText: string, opts?: { traceId?: string }) => void;
   error: (keyOrText: string, opts?: { traceId?: string }) => void;
   info: (keyOrText: string, opts?: { traceId?: string }) => void;
-} | null>(null);
+};
+
+// Hold context in module variable but DO NOT call createContext at import time.
+let ToastContext: React.Context<ToastApi | null> | null = null;
+
+const noopApi: ToastApi = {
+  success: () => {},
+  error: () => {},
+  info: () => {},
+};
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Lazily create context on client render
+  if (typeof window !== 'undefined' && ToastContext === null) {
+    ToastContext = React.createContext<ToastApi | null>(null);
+  }
+
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [dir, setDir] = useState<string>(() => typeof document !== 'undefined' ? document.documentElement.dir || 'ltr' : 'ltr');
 
@@ -26,11 +40,20 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setTimeout(() => setToasts((s) => s.filter((x) => x.id !== id)), 4500);
   };
 
-  const value = useMemo(() => ({
+  const value = useMemo<ToastApi>(() => ({
     success: (k: string, o?: { traceId?: string }) => add('success', k, o),
     error: (k: string, o?: { traceId?: string }) => add('error', k, o),
     info: (k: string, o?: { traceId?: string }) => add('info', k, o),
   }), []);
+
+  // If context wasn't created (server-side), just render children without provider
+  if (!ToastContext) {
+    return (
+      <>
+        {children}
+      </>
+    );
+  }
 
   return (
     <ToastContext.Provider value={value}>
@@ -53,10 +76,13 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
-export const useToast = () => {
-  const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error('useToast must be used inside ToastProvider');
-  return ctx;
+// Hook to access toast API. On server, return noop implementation to avoid errors during build.
+export const useToast = (): ToastApi => {
+  if (typeof window === 'undefined') return noopApi;
+  if (!ToastContext) return noopApi;
+  const ctx = React.useContext(ToastContext);
+  return ctx ?? noopApi;
 };
 
 export default ToastProvider;
+

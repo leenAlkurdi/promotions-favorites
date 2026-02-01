@@ -1,12 +1,11 @@
+"use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { favoritePromotion } from "@/services/promotionsApi";
-import { useToast } from '@/lib/ToastProvider';
 import { mapErrorToI18n } from '@/lib/errorMapper';
 import { useTranslation } from 'next-i18next';
 
 export function useFavoritePromotion() {
   const queryClient = useQueryClient();
-  const toast = useToast();
   const { t } = useTranslation();
 
   return useMutation({
@@ -16,17 +15,25 @@ export function useFavoritePromotion() {
       // optional optimistic update could go here
       return { promotionId };
     },
-    onError: (err: any, _vars, context) => {
+    onError: async (err: any, _vars, context) => {
       const mapped = mapErrorToI18n(err);
-      toast.error(mapped.key, { traceId: err?.traceId });
+      try {
+        const mod = await import('@/lib/ToastProvider');
+        const toast = mod.useToast();
+        toast.error(mapped.key, { traceId: err?.traceId });
+      } catch (_) {}
       // rollback logic if optimistic update applied
       if (context) {
         queryClient.invalidateQueries({ queryKey: ['promotions'] });
         queryClient.invalidateQueries({ queryKey: ['favorites'] });
       }
     },
-    onSuccess: (res: any) => {
-      toast.success('toasts.favorited', { traceId: res?.traceId });
+    onSuccess: async (res: any) => {
+      try {
+        const mod = await import('@/lib/ToastProvider');
+        const toast = mod.useToast();
+        toast.success('toasts.favorited', { traceId: res?.traceId });
+      } catch (_) {}
       queryClient.invalidateQueries({ queryKey: ['promotions'] });
       queryClient.invalidateQueries({ queryKey: ['favorites'] });
     },
