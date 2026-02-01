@@ -1,8 +1,89 @@
 {
-  "promotions": "العروض",
-  "favorites": "المفضلة",
-  "search": "بحث",
-  "language": "اللغة",
-  "active": "نشط",
-  "expired": "منتهي"
+  "navbar": {
+    "logo": "عروض 7awel",
+    "searchPlaceholder": "ابحث عن عروض أو المتاجر...",
+    "language": "اللغة",
+    "tabs": {
+      "all": "كل العروض",
+      "favorites": "المفضلات"
+    }
+  },
+  "section": {
+    "promotionsTitle": "العروض",
+    "favoritesTitle": "مفضلاتك"
+  },
+  "filters": {
+    "title": "الفلترة",
+    "merchant": "التاجر",
+    "expiresBefore": "ينتهي قبل",
+    "apply": "تطبيق",
+    "clear": "مسح"
+  },
+  "promotions": {
+    "card": {
+      "merchant": "التاجر",
+      "reward": "المكافأة",
+      "expiresIn": "ينتهي خلال {{days}} يوم",
+      "expired": "منتهية الصلاحية",
+      "viewDetails": "عرض التفاصيل",
+      "favorite": "أضف إلى المفضلات",
+      "unfavorite": "أزل من المفضلات"
+    },
+    "detail": {
+      "title": "تفاصيل العرض",
+      "description": "الوصف",
+      "terms": "الشروط والأحكام",
+      "share": "مشاركة",
+      "expiryBadge": "ينتهي في {{date}}"
+    }
+  },
+  "favorites": {
+    "tabs": {
+      "active": "نشطة",
+      "expired": "منتهية"
+    },
+    "aggregates": {
+      "totalCount": "إجمالي المفضلات: {{count}}",
+      "totalRewards": "إجمالي المكافآت المحتملة: {{amount}}"
+    },
+    "empty": {
+      "title": "لا توجد مفضلات بعد",
+      "body": "احفظ العروض التي تعجبك لتجدها هنا لاحقًا.",
+      "browseCta": "تصفح العروض"
+    }
+  },
+  "toasts": {
+    "favorited": "أضيف إلى المفضلات",
+    "unfavorited": "أُزيل من المفضلات",
+    "saved": "تم الحفظ",
+    "removed": "تم الإزالة",
+    "success": "تم بنجاح",
+    "error": "حدث خطأ ما"
+  },
+  "errors": {
+    "GENERIC": "حدث خطأ. الرجاء المحاولة مرة أخرى.",
+    "BAD_REQUEST": "طلب غير صالح.",
+    "UNAUTHORIZED": "تحتاج لتسجيل الدخول لتنفيذ هذا الإجراء.",
+    "FORBIDDEN": "ليس لديك صلاحية الوصول.",
+    "NOT_FOUND": "المطلوب غير موجود.",
+    "PROMOTION_EXPIRED": "انتهت صلاحية هذا العرض.",
+    "ALREADY_FAVORITED": "هذا العرض موجود مسبقًا في المفضلات.",
+    "NOT_FAVORITED": "هذا العرض غير موجود في المفضلات.",
+    "NETWORK": "خطأ في الشبكة. تحقق من الاتصال.",
+    "VALIDATION": "يرجى التحقق من حقول النموذج."
+  },
+  "actions": {
+    "retry": "أعد المحاولة",
+    "close": "إغلاق",
+    "share": "مشاركة"
+  },
+  "pagination": {
+    "next": "التالي",
+    "prev": "السابق",
+    "page": "الصفحة {{page}}"
+  },
+  "loading": "جارٍ التحميل...",
+  "empty": {
+    "noResults": "لم يتم العثور على نتائج"
+  }
 }

@@ -1,8 +1,89 @@
 {
-  "promotions": "Promotions",
-  "favorites": "Favorites",
-  "search": "Search",
-  "language": "Language",
-  "active": "Active",
-  "expired": "Expired"
+  "navbar": {
+    "logo": "7awel Promotions",
+    "searchPlaceholder": "Search promotions or merchants...",
+    "language": "Language",
+    "tabs": {
+      "all": "All Promotions",
+      "favorites": "Favorites"
+    }
+  },
+  "section": {
+    "promotionsTitle": "Promotions",
+    "favoritesTitle": "Your Favorites"
+  },
+  "filters": {
+    "title": "Filters",
+    "merchant": "Merchant",
+    "expiresBefore": "Expires before",
+    "apply": "Apply",
+    "clear": "Clear"
+  },
+  "promotions": {
+    "card": {
+      "merchant": "Merchant",
+      "reward": "Reward",
+      "expiresIn": "Expires in {{days}} days",
+      "expired": "Expired",
+      "viewDetails": "View details",
+      "favorite": "Add to favorites",
+      "unfavorite": "Remove from favorites"
+    },
+    "detail": {
+      "title": "Promotion details",
+      "description": "Description",
+      "terms": "Terms & conditions",
+      "share": "Share",
+      "expiryBadge": "Expires {{date}}"
+    }
+  },
+  "favorites": {
+    "tabs": {
+      "active": "Active",
+      "expired": "Expired"
+    },
+    "aggregates": {
+      "totalCount": "Total favorites: {{count}}",
+      "totalRewards": "Total potential rewards: {{amount}}"
+    },
+    "empty": {
+      "title": "No favorites yet",
+      "body": "Save promotions you like and find them here.",
+      "browseCta": "Browse promotions"
+    }
+  },
+  "toasts": {
+    "favorited": "Added to favorites",
+    "unfavorited": "Removed from favorites",
+    "saved": "Saved",
+    "removed": "Removed",
+    "success": "Success",
+    "error": "Something went wrong"
+  },
+  "errors": {
+    "GENERIC": "Something went wrong. Please try again.",
+    "BAD_REQUEST": "Invalid request.",
+    "UNAUTHORIZED": "You need to sign in to perform this action.",
+    "FORBIDDEN": "You do not have permission.",
+    "NOT_FOUND": "Requested resource not found.",
+    "PROMOTION_EXPIRED": "This promotion has expired.",
+    "ALREADY_FAVORITED": "This promotion is already in your favorites.",
+    "NOT_FAVORITED": "This promotion is not in your favorites.",
+    "NETWORK": "Network error. Check your connection.",
+    "VALIDATION": "Please check the form fields."
+  },
+  "actions": {
+    "retry": "Retry",
+    "close": "Close",
+    "share": "Share"
+  },
+  "pagination": {
+    "next": "Next",
+    "prev": "Previous",
+    "page": "Page {{page}}"
+  },
+  "loading": "Loading...",
+  "empty": {
+    "noResults": "No results found"
+  }
 }

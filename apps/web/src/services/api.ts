@@ -9,16 +9,23 @@ export const api = axios.create({
 api.interceptors.response.use(
 	(response) => response,
 	(error) => {
-
-		if (error.response?.data?.statusCode) {
-			return Promise.reject(error.response.data);
+		const resp = error.response?.data;
+		if (resp?.statusCode) {
+			// normalize fields if backend already returns ApiResponse shape
+			return Promise.reject({
+				statusCode: resp.statusCode,
+				message: resp.message,
+				data: resp.data,
+				errorCode: resp.errorCode,
+				traceId: resp.traceId,
+			});
 		}
 
 		return Promise.reject({
-			statusCode: 500,
-			message: error.message || "Unknown error",
+			statusCode: error.response?.status ?? 500,
+			message: error.message || 'Unknown error',
 			data: null,
-			errorCode: "INTERNAL_ERROR",
+			errorCode: 'INTERNAL_ERROR',
 			traceId: undefined,
 		});
 	}
