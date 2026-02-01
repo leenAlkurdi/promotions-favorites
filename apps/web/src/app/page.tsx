@@ -1,4 +1,4 @@
-import { LanguageToggle } from "@/components/LanguageToggle";
+import { LanguageToggle } from "@/components/Navbar/LanguageToggle";
 
 export default function Home() {
   return (
@@ -9,7 +9,7 @@ export default function Home() {
           Frontend setup complete. Next step: build promotions and favorites UI.
         </p>
         <div className="flex justify-center pt-4">
-          <LanguageToggle />
+          {/* <LanguageToggle /> */}
         </div>
 
       </div>

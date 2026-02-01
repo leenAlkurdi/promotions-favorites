@@ -15,16 +15,20 @@ export function LanguageToggle() {
   const toggleLang = () => {
     const cleanPath = pathname.replace(/^\/(en|ar)/, "");
     router.push(`/${nextLocale}${cleanPath || "/"}`);
+    // immediately set dir for client-rendered pages
+    if (typeof document !== 'undefined') {
+      document.documentElement.dir = nextLocale === 'ar' ? 'rtl' : 'ltr';
+    }
   };
 
   return (
     <button
       type="button"
       onClick={toggleLang}
-      aria-label={t(
+      aria-label={typeof t === 'function' ? t(
         "common.switchLanguage",
         nextLocale === "ar" ? "التبديل إلى العربية" : "Switch to English"
-      )}
+      ) : (nextLocale === 'ar' ? 'التبديل إلى العربية' : 'Switch to English')}
       className="
     flex h-10 w-10 items-center justify-center
     rounded-lg
