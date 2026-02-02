@@ -1,18 +1,23 @@
-import { LanguageToggle } from "@/components/Navbar/LanguageToggle";
+"use client";
+import PromotionsList from '@/components/PromotionsList';
+import usePromotions from '@/hooks/usePromotions';
+import { useFavoritePromotion } from '@/hooks/useFavoritePromotion';
+import { useUnfavoritePromotion } from '@/hooks/useUnfavoritePromotion';
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-white px-6 text-center text-zinc-900">
-      <div className="max-w-xl space-y-4">
-        <h1 className="text-3xl font-semibold">Promotions Favorites</h1>
-        <p className="text-base text-zinc-600">
-          Frontend setup complete. Next step: build promotions and favorites UI.
-        </p>
-        <div className="flex justify-center pt-4">
-          {/* <LanguageToggle /> */}
-        </div>
+  const { data: promotions = [], isLoading } = usePromotions();
+  const fav = useFavoritePromotion();
+  const unfav = useUnfavoritePromotion();
 
-      </div>
+  const handleToggle = (id: string) => {
+    // naive toggle: call favorite (real app should check current state)
+    fav.mutate(id);
+  };
+
+  return (
+    <main className="max-w-6xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-semibold mb-4">Promotions</h1>
+      <PromotionsList promotions={promotions} isLoading={isLoading} onToggleFavorite={handleToggle} />
     </main>
   );
 }
