@@ -1,10 +1,10 @@
 "use client";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, type InfiniteData } from "@tanstack/react-query";
 import { getFavorites } from "../services/favoritesApi";
 import { FavoritesResponse } from "@promotions-favorites/shared";
 
 export function useFavorites(limit = 9) {
-  const query = useInfiniteQuery<FavoritesResponse, Error>({
+  const query = useInfiniteQuery<FavoritesResponse, Error, InfiniteData<FavoritesResponse>, ["favorites", number], string | null>({
     queryKey: ["favorites", limit],
     queryFn: async ({ pageParam }) => {
       const res = await getFavorites({ cursor: pageParam ?? null, limit });
@@ -15,7 +15,7 @@ export function useFavorites(limit = 9) {
 
       return res.data;
     },
-    initialPageParam: null as string | null,
+    initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.meta.nextPageCursor,
   });
 

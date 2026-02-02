@@ -14,4 +14,5 @@ export type CardItem = {
 export type CardActionHandlers = {
   onToggleFavorite?: (itemId: string, nextIsFavorite: boolean) => void;
   isUpdating?: boolean;
+  onSelect?: (item: CardItem) => void;
 };

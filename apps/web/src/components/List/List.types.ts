@@ -11,6 +11,7 @@ export type ListProps = {
   emptyBody?: string;
   onToggleFavorite?: CardActionHandlers["onToggleFavorite"];
   isUpdating?: boolean;
+  onSelect?: CardActionHandlers["onSelect"];
   renderItem?: (item: CardItem) => ReactNode;
   skeletonCount?: number;
 };

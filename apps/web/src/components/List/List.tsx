@@ -11,6 +11,7 @@ export default function List({
   emptyTitle = "No items",
   emptyBody = "Try adjusting your filters or check back later.",
   onToggleFavorite,
+  onSelect,
   isUpdating = false,
   renderItem,
   skeletonCount = 6,
@@ -36,6 +37,7 @@ export default function List({
             <Card
               item={item}
               onToggleFavorite={onToggleFavorite}
+              onSelect={onSelect}
               isUpdating={isUpdating}
             />
           )}

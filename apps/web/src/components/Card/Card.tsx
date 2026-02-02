@@ -7,13 +7,26 @@ type Props = {
     item: CardItem;
 } & CardActionHandlers;
 
-export default function Card({ item, onToggleFavorite, isUpdating = false }: Props) {
+export default function Card({ item, onToggleFavorite, onSelect, isUpdating = false }: Props) {
     const isFavorite = Boolean(item.isFavorite);
     const showExpiryBadge = typeof item.daysUntilExpiry === "number" && item.daysUntilExpiry <= 7;
     const formattedExpiry = item.expiresAt ? new Date(item.expiresAt).toLocaleDateString() : undefined;
+    const daysLeft = typeof item.daysUntilExpiry === "number" ? Math.max(item.daysUntilExpiry, 0) : undefined;
+    const expiryProgress = daysLeft !== undefined ? Math.min(100, Math.max(0, 100 - (daysLeft / 30) * 100)) : undefined;
 
     return (
-        <article className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col">
+        <article
+            className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col cursor-pointer transition hover:shadow-md"
+            role="button"
+            tabIndex={0}
+            onClick={() => onSelect?.(item)}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelect?.(item);
+                }
+            }}
+        >
             <div className="h-44 w-full relative bg-gray-100">
                 {item.thumbnailUrl ? (
                     <Image
@@ -33,7 +46,10 @@ export default function Card({ item, onToggleFavorite, isUpdating = false }: Pro
                     <button
                         aria-pressed={isFavorite}
                         aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-                        onClick={() => onToggleFavorite(item.id, !isFavorite)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleFavorite(item.id, !isFavorite);
+                        }}
                         disabled={isUpdating}
                         className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all"
                     >
@@ -58,16 +74,24 @@ export default function Card({ item, onToggleFavorite, isUpdating = false }: Pro
                 </div>
 
                 {item.rewardAmount !== undefined && item.rewardCurrency && (
-                    <div className="text-sm font-bold text-primary">
-                        {item.rewardAmount} {item.rewardCurrency}
-                    </div>
+                    <div className="text-sm font-semibold text-primary">{item.rewardAmount} {item.rewardCurrency}</div>
                 )}
-
-                {item.description && <p className="text-xs text-gray-600 line-clamp-2">{item.description}</p>}
 
                 <div className="mt-auto flex items-center justify-between text-xs text-textSecondary">
                     {formattedExpiry && <span>Expires on {formattedExpiry}</span>}
+                    {daysLeft !== undefined && (
+                        <span className="font-medium text-gray-700">{daysLeft}d left</span>
+                    )}
                 </div>
+
+                {expiryProgress !== undefined && (
+                    <div className="h-2 w-full rounded-full bg-gray-100 overflow-hidden" aria-label="Time until expiry">
+                        <div
+                            className="h-full bg-primary transition-all"
+                            style={{ width: `${expiryProgress}%` }}
+                        />
+                    </div>
+                )}
             </div>
         </article>
     );

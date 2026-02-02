@@ -5,6 +5,8 @@ import { PromotionWithFavorite } from "@promotions-favorites/shared";
 import { useFavoritePromotion } from "../hooks/useFavoritePromotion";
 import { useUnfavoritePromotion } from "../hooks/useUnfavoritePromotion";
 import { ListView } from "@/components/List/List.types";
+import { useState, useMemo } from "react";
+import PromotionDetailModal from "./PromotionDetailModal";
 
 type Props = {
   promotions?: PromotionWithFavorite[];
@@ -34,10 +36,13 @@ const toCardItem = (promotion: PromotionWithFavorite): CardItem => ({
 export default function PromotionsList({ promotions = [], isLoading = false, view = "grid" }: Props) {
   const favoriteMutation = useFavoritePromotion();
   const unfavoriteMutation = useUnfavoritePromotion();
+  const [selected, setSelected] = useState<PromotionWithFavorite | null>(null);
 
   const isUpdating = favoriteMutation.status === "pending" || unfavoriteMutation.status === "pending";
 
   const toggleFavorite = (id: string, nextIsFavorite: boolean) => {
+    setSelected((prev) => (prev && prev.id === id ? { ...prev, isFavorite: nextIsFavorite } : prev));
+
     if (nextIsFavorite) {
       favoriteMutation.mutate(id);
     } else {
@@ -47,15 +52,37 @@ export default function PromotionsList({ promotions = [], isLoading = false, vie
 
   const items: CardItem[] = promotions.map((p) => toCardItem(p));
 
+  const promotionById = useMemo(() => {
+    const map = new Map<string, PromotionWithFavorite>();
+    promotions.forEach((p) => map.set(p.id, p));
+    return map;
+  }, [promotions]);
+
+  const handleSelect = (item: CardItem) => {
+    const promo = promotionById.get(item.id);
+    if (promo) setSelected(promo);
+  };
+
   return (
-    <List
-      items={items}
-      isLoading={isLoading}
-      view={view}
-      onToggleFavorite={toggleFavorite}
-      isUpdating={isUpdating}
-      emptyTitle="No promotions found"
-      emptyBody="Try adjusting your filters or check back later."
-    />
+    <>
+      <List
+        items={items}
+        isLoading={isLoading}
+        view={view}
+        onToggleFavorite={toggleFavorite}
+        onSelect={handleSelect}
+        isUpdating={isUpdating}
+        emptyTitle="No promotions found"
+        emptyBody="Try adjusting your filters or check back later."
+      />
+
+      {selected && (
+        <PromotionDetailModal
+          promotion={selected}
+          onClose={() => setSelected(null)}
+          onToggleFavorite={toggleFavorite}
+        />
+      )}
+    </>
   );
 }

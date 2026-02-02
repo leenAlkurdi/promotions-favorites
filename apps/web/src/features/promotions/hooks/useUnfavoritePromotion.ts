@@ -2,6 +2,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { unfavoritePromotion } from "../services/promotionsApi";
 import { mapErrorToI18n } from "@/lib/errorMapper";
+import { getToast } from "@/lib/ToastProvider";
 
 export function useUnfavoritePromotion() {
   const queryClient = useQueryClient();
@@ -48,13 +49,8 @@ export function useUnfavoritePromotion() {
     onError: async (err: any, _vars, context: any) => {
       console.debug("[useUnfavoritePromotion] onError", err, context);
       const mapped = mapErrorToI18n(err);
-      try {
-        const mod = await import("@/lib/ToastProvider");
-        const toast = mod.useToast();
-        toast.error(mapped.key, { traceId: err?.traceId });
-      } catch (_) {
-        // ignore toast import errors
-      }
+      const toast = getToast();
+      toast.error(mapped.key, { traceId: err?.traceId });
 
       if (context?.previousPromotions) {
         context.previousPromotions.forEach(([key, data]: any) => {
@@ -69,13 +65,8 @@ export function useUnfavoritePromotion() {
     },
     onSuccess: async (res: any) => {
       console.debug("[useUnfavoritePromotion] onSuccess", res);
-      try {
-        const mod = await import("@/lib/ToastProvider");
-        const toast = mod.useToast();
-        toast.success("toasts.unfavorited", { traceId: res?.traceId });
-      } catch (_) {
-        // ignore toast import errors
-      }
+      const toast = getToast();
+      toast.success("toasts.unfavorited", { traceId: res?.traceId });
       queryClient.invalidateQueries({ queryKey: ["promotions"] });
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
