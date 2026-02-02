@@ -1,7 +1,7 @@
 "use client";
 import NavLink from '@/components/NavLink';
 import { usePathname } from "next/navigation";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "react-i18next";
 import { Heart, Tags } from "lucide-react";
 
 type Props = {
@@ -35,7 +35,7 @@ export default function NavbarTabs({ vertical = false, className = "", onItemCli
                 icon={<Tags size={16} className="mr-2" />}
                 onClick={onItemClick}
             >
-                {t('All Promotions')}
+                {t('navbar.tabs.all')}
             </NavLink>
 
             <NavLink
@@ -44,7 +44,7 @@ export default function NavbarTabs({ vertical = false, className = "", onItemCli
                 icon={<Heart size={16} className="mr-2" />}
                 onClick={onItemClick}
             >
-                {t('Favorites')}
+                {t('navbar.tabs.favorites')}
             </NavLink>
         </div>
     );

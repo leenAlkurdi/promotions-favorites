@@ -15,6 +15,7 @@
   "filters": {
     "title": "Filters",
     "merchant": "Merchant",
+    "allMerchants": "All merchants",
     "expiresBefore": "Expires before",
     "apply": "Apply",
     "clear": "Clear"
@@ -25,6 +26,8 @@
       "reward": "Reward",
       "expiresIn": "Expires in {{days}} days",
       "expired": "Expired",
+      "expiresOn": "Expires on {{date}}",
+      "noImage": "No image",
       "viewDetails": "View details",
       "favorite": "Add to favorites",
       "unfavorite": "Remove from favorites"
@@ -53,12 +56,12 @@
     }
   },
   "toasts": {
-    "favorited": "Added to favorites",
-    "unfavorited": "Removed from favorites",
-    "saved": "Saved",
-    "removed": "Removed",
-    "success": "Success",
-    "error": "Something went wrong"
+    "favorited": "Saved to your favorites",
+    "unfavorited": "Removed from your favorites",
+    "saved": "Saved successfully",
+    "removed": "Removed successfully",
+    "success": "All set!",
+    "error": "Oops, something went wrong"
   },
   "errors": {
     "GENERIC": "Something went wrong. Please try again.",

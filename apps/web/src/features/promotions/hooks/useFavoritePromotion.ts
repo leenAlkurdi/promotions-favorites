@@ -34,7 +34,7 @@ export function useFavoritePromotion() {
       console.debug("[useFavoritePromotion] onError", err, context);
       const mapped = mapErrorToI18n(err);
       const toast = getToast();
-      toast.error(mapped.key, { traceId: err?.traceId });
+      toast.error(mapped.key, { traceId: err?.traceId, params: mapped.params });
 
       if (context?.previousPromotions) {
         context.previousPromotions.forEach(([key, data]: any) => {

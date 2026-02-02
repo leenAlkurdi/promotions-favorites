@@ -1,23 +1,26 @@
 "use client";
 
 import { Languages } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 export function LanguageToggle() {
-  const router = useRouter();
-  const pathname = usePathname();
   const { i18n, t } = useTranslation();
 
   const currentLocale = (i18n.language as "en" | "ar") ?? "en";
   const nextLocale = currentLocale === "en" ? "ar" : "en";
 
+  useEffect(() => {
+    const dir = currentLocale === "ar" ? "rtl" : "ltr";
+    if (typeof document !== "undefined") {
+      document.documentElement.dir = dir;
+    }
+  }, [currentLocale]);
+
   const toggleLang = () => {
-    const cleanPath = pathname.replace(/^\/(en|ar)/, "");
-    router.push(`/${nextLocale}${cleanPath || "/"}`);
-    // immediately set dir for client-rendered pages
-    if (typeof document !== 'undefined') {
-      document.documentElement.dir = nextLocale === 'ar' ? 'rtl' : 'ltr';
+    i18n.changeLanguage(nextLocale);
+    if (typeof document !== "undefined") {
+      document.documentElement.dir = nextLocale === "ar" ? "rtl" : "ltr";
     }
   };
 
@@ -25,23 +28,12 @@ export function LanguageToggle() {
     <button
       type="button"
       onClick={toggleLang}
-      aria-label={typeof t === 'function' ? t(
-        "common.switchLanguage",
-        nextLocale === "ar" ? "التبديل إلى العربية" : "Switch to English"
-      ) : (nextLocale === 'ar' ? 'التبديل إلى العربية' : 'Switch to English')}
-      className="
-    flex h-10 w-10 items-center justify-center
-    rounded-lg
-    bg-primary text-white
-    shadow-md
-    transition-all duration-150
-    hover:bg-accent hover:shadow-lg
-    focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2
-    active:scale-95
-    cursor-pointer
-  "
+      aria-label={t("navbar.language")}
+      title={t("navbar.language")}
+      className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white hover:bg-accent hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 active:scale-95 cursor-pointer transition"
     >
       <Languages className="h-5 w-5" />
+      <span className="sr-only">{nextLocale === "ar" ? "التبديل إلى العربية" : "Switch to English"}</span>
     </button>
   );
 }

@@ -1,12 +1,13 @@
 "use client";
 import List from "@/components/List/List";
-import { CardItem } from "@components/Card/Card.types";
+import { CardItem } from "@/components/Card/Card.types";
 import { PromotionWithFavorite } from "@promotions-favorites/shared";
 import { useFavoritePromotion } from "@/features/promotions/hooks/useFavoritePromotion";
 import { useUnfavoritePromotion } from "@/features/promotions/hooks/useUnfavoritePromotion";
 import { ListView } from "@/components/List/List.types";
 import { useMemo, useState } from "react";
 import PromotionDetailModal from "@/features/promotions/components/PromotionDetailModal";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   favorites?: PromotionWithFavorite[];
@@ -37,6 +38,7 @@ export default function FavoritesList({ favorites = [], isLoading = false, view 
   const favoriteMutation = useFavoritePromotion();
   const unfavoriteMutation = useUnfavoritePromotion();
   const [selected, setSelected] = useState<PromotionWithFavorite | null>(null);
+  const { t } = useTranslation();
 
   const isUpdating = favoriteMutation.status === "pending" || unfavoriteMutation.status === "pending";
 
@@ -72,8 +74,8 @@ export default function FavoritesList({ favorites = [], isLoading = false, view 
         onToggleFavorite={toggleFavorite}
         onSelect={handleSelect}
         isUpdating={isUpdating}
-        emptyTitle="No favorites yet"
-        emptyBody="Save promotions you like to find them here."
+        emptyTitle={t("favorites.empty.title")}
+        emptyBody={t("favorites.empty.body")}
       />
 
       {selected && (

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 export default function DirectionProvider({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation();

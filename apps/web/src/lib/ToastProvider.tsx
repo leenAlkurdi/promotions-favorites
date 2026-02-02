@@ -1,13 +1,14 @@
 "use client";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { CheckCircle, AlertTriangle, Info } from "lucide-react"; // أيقونات
+import { useTranslation } from "react-i18next";
 
 type Toast = { id: number; type: "success" | "error" | "info"; message: string; traceId?: string };
 
 type ToastApi = {
-  success: (keyOrText: string, opts?: { traceId?: string }) => void;
-  error: (keyOrText: string, opts?: { traceId?: string }) => void;
-  info: (keyOrText: string, opts?: { traceId?: string }) => void;
+  success: (keyOrText: string, opts?: { traceId?: string; params?: Record<string, unknown> }) => void;
+  error: (keyOrText: string, opts?: { traceId?: string; params?: Record<string, unknown> }) => void;
+  info: (keyOrText: string, opts?: { traceId?: string; params?: Record<string, unknown> }) => void;
 };
 
 let ToastContext: React.Context<ToastApi | null> | null = null;
@@ -25,6 +26,8 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     ToastContext = React.createContext<ToastApi | null>(null);
   }
 
+  const { t } = useTranslation();
+
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [dir, setDir] = useState<string>(() => typeof document !== "undefined" ? document.documentElement.dir || "ltr" : "ltr");
 
@@ -34,17 +37,30 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => obs.disconnect();
   }, []);
 
-  const add = (type: Toast["type"], message: string, opts?: { traceId?: string }) => {
+  const translate = (keyOrText: string, params?: Record<string, unknown>): string => {
+    if (!keyOrText) return "";
+    try {
+      const translated = t(keyOrText, params as any);
+      if (typeof translated === "string") return translated;
+      if (translated == null) return keyOrText;
+      return String(translated);
+    } catch (_) {
+      return keyOrText;
+    }
+  };
+
+  const add = (type: Toast["type"], message: string, opts?: { traceId?: string; params?: Record<string, unknown> }) => {
     const id = Date.now() + Math.floor(Math.random() * 1000);
-    setToasts((s) => [...s, { id, type, message, traceId: opts?.traceId }]);
+    const resolvedMessage = translate(message, opts?.params);
+    setToasts((s) => [...s, { id, type, message: resolvedMessage, traceId: opts?.traceId }]);
     setTimeout(() => setToasts((s) => s.filter((x) => x.id !== id)), 4500);
   };
 
-  const value = useMemo<ToastApi>(() => ({
-    success: (msg: string, opts?: { traceId?: string }) => add("success", msg, opts),
-    error: (msg: string, opts?: { traceId?: string }) => add("error", msg, opts),
-    info: (msg: string, opts?: { traceId?: string }) => add("info", msg, opts),
-  }), []);
+  const value: ToastApi = {
+    success: (msg: string, opts?: { traceId?: string; params?: Record<string, unknown> }) => add("success", msg, opts),
+    error: (msg: string, opts?: { traceId?: string; params?: Record<string, unknown> }) => add("error", msg, opts),
+    info: (msg: string, opts?: { traceId?: string; params?: Record<string, unknown> }) => add("info", msg, opts),
+  };
 
   useEffect(() => {
     toastApiRef.current = value;

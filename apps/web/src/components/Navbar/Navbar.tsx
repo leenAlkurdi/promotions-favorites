@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "react-i18next";
 import NavbarTabs from "./NavbarTabs";
 import { LanguageToggle } from "./LanguageToggle";
 
@@ -42,10 +42,10 @@ export default function Navbar() {
             <div className="max-w-6xl mx-auto px-4 h-16 flex items-center gap-3">
                 {/* Logo */}
                     <Link href="/promotions" className="flex items-center gap-2 shrink-0">
-                    <Image src="/logo.png" alt="7awel" width={32} height={32} priority />
+                    <Image src="/logo.png" alt={t("navbar.logo")} width={32} height={32} priority />
 
                     <span className="hidden sm:inline font-semibold text-primary text-lg">
-                        7awel
+                        {t("navbar.logo")}
                     </span>
                 </Link>
 
@@ -66,7 +66,7 @@ export default function Navbar() {
                         <input
                             value={q}
                             onChange={(e) => setQ(e.target.value)}
-                            placeholder={t("Search promotions, merchants…")}
+                            placeholder={t("navbar.searchPlaceholder")}
                             className="
                 w-full
                 pl-10 pr-4 py-2

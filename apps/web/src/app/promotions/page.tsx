@@ -4,6 +4,7 @@ import FilterBar from "@/features/promotions/components/FilterBar";
 import { useSearchParams, useRouter } from "next/navigation";
 import { usePromotions } from "@/features/promotions/hooks/usePromotions";
 import { PromotionWithFavorite } from "@promotions-favorites/shared";
+import { useTranslation } from "react-i18next";
 
 const daysUntil = (dateStr?: string) => {
   if (!dateStr) return 0;
@@ -14,14 +15,15 @@ const daysUntil = (dateStr?: string) => {
 export default function PromotionsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const page = Number(searchParams.get("page") ?? "1");
   const limit = Number(searchParams.get("limit") ?? "9");
-  const q = searchParams.get("q") ?? undefined;
+  const q = searchParams.get("q") ?? "";
   const merchant = searchParams.get("merchant") ?? undefined;
   const expiresBefore = searchParams.get("expiresBefore") ?? undefined;
 
-  const { data, isLoading } = usePromotions({ page, limit, q, merchant, expiresBefore } as any);
+  const { data, isLoading } = usePromotions({ page, limit, q: q || undefined, merchant, expiresBefore } as any);
 
   const handlePrev = () => {
     if (page <= 1) return;
@@ -55,7 +57,7 @@ export default function PromotionsPage() {
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-8">
-      <FilterBar initial={{ merchant, expiresBefore }} onChange={() => {}} />
+      <FilterBar initial={{ q: q || undefined, merchant, expiresBefore }} />
       <PromotionsList promotions={promotionsForUi} isLoading={isLoading} />
 
       <div className="flex items-center justify-center gap-4 mt-6">
@@ -64,11 +66,11 @@ export default function PromotionsPage() {
           disabled={currentPage <= 1}
           onClick={handlePrev}
         >
-          Previous
+          {t("pagination.prev")}
         </button>
 
         <span>
-          Page {currentPage} of {Math.ceil(total / currentLimit) || 1}
+          {t("pagination.page", { page: `${currentPage}` })}
         </span>
 
         <button
@@ -76,7 +78,7 @@ export default function PromotionsPage() {
           disabled={currentPage * currentLimit >= total}
           onClick={handleNext}
         >
-          Next
+          {t("pagination.next")}
         </button>
       </div>
     </main>

@@ -15,6 +15,7 @@
   "filters": {
     "title": "الفلترة",
     "merchant": "التاجر",
+    "allMerchants": "كل التجار",
     "expiresBefore": "ينتهي قبل",
     "apply": "تطبيق",
     "clear": "مسح"
@@ -25,6 +26,8 @@
       "reward": "المكافأة",
       "expiresIn": "ينتهي خلال {{days}} يوم",
       "expired": "منتهية الصلاحية",
+      "expiresOn": "ينتهي في {{date}}",
+      "noImage": "لا توجد صورة",
       "viewDetails": "عرض التفاصيل",
       "favorite": "أضف إلى المفضلات",
       "unfavorite": "أزل من المفضلات"
@@ -53,12 +56,12 @@
     }
   },
   "toasts": {
-    "favorited": "أضيف إلى المفضلات",
-    "unfavorited": "أُزيل من المفضلات",
-    "saved": "تم الحفظ",
-    "removed": "تم الإزالة",
-    "success": "تم بنجاح",
-    "error": "حدث خطأ ما"
+    "favorited": "تم الحفظ في المفضلة",
+    "unfavorited": "تمت الإزالة من المفضلة",
+    "saved": "تم الحفظ بنجاح",
+    "removed": "تمت الإزالة بنجاح",
+    "success": "تم الأمر!",
+    "error": "عذراً، حدث خطأ ما"
   },
   "errors": {
     "GENERIC": "حدث خطأ. الرجاء المحاولة مرة أخرى.",

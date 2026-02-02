@@ -7,6 +7,7 @@ import { useUnfavoritePromotion } from "../hooks/useUnfavoritePromotion";
 import { ListView } from "@/components/List/List.types";
 import { useState, useMemo } from "react";
 import PromotionDetailModal from "./PromotionDetailModal";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   promotions?: PromotionWithFavorite[];
@@ -37,6 +38,7 @@ export default function PromotionsList({ promotions = [], isLoading = false, vie
   const favoriteMutation = useFavoritePromotion();
   const unfavoriteMutation = useUnfavoritePromotion();
   const [selected, setSelected] = useState<PromotionWithFavorite | null>(null);
+  const { t } = useTranslation();
 
   const isUpdating = favoriteMutation.status === "pending" || unfavoriteMutation.status === "pending";
 
@@ -72,8 +74,8 @@ export default function PromotionsList({ promotions = [], isLoading = false, vie
         onToggleFavorite={toggleFavorite}
         onSelect={handleSelect}
         isUpdating={isUpdating}
-        emptyTitle="No promotions found"
-        emptyBody="Try adjusting your filters or check back later."
+        emptyTitle={t("empty.noResults")}
+        emptyBody={t("favorites.empty.body")}
       />
 
       {selected && (

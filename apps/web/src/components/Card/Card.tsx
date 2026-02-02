@@ -2,12 +2,14 @@
 import Image from "next/image";
 import { Heart, Clock } from "lucide-react";
 import { CardActionHandlers, CardItem } from "./Card.types";
+import { useTranslation } from "react-i18next";
 
 type Props = {
     item: CardItem;
 } & CardActionHandlers;
 
 export default function Card({ item, onToggleFavorite, onSelect, isUpdating = false }: Props) {
+    const { t } = useTranslation();
     const isFavorite = Boolean(item.isFavorite);
     const showExpiryBadge = typeof item.daysUntilExpiry === "number" && item.daysUntilExpiry <= 7;
     const formattedExpiry = item.expiresAt ? new Date(item.expiresAt).toLocaleDateString() : undefined;
@@ -38,7 +40,7 @@ export default function Card({ item, onToggleFavorite, onSelect, isUpdating = fa
                     />
                 ) : (
                     <div className="h-full w-full flex items-center justify-center text-sm text-textSecondary">
-                        No image
+                        {t("promotions.card.noImage")}
                     </div>
                 )}
 
@@ -62,7 +64,7 @@ export default function Card({ item, onToggleFavorite, onSelect, isUpdating = fa
                 {showExpiryBadge && typeof item.daysUntilExpiry === "number" && (
                     <div className="absolute left-3 top-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {item.daysUntilExpiry < 0 ? "Ended" : `Ends in ${item.daysUntilExpiry} days`}
+                        {item.daysUntilExpiry < 0 ? t("promotions.card.expired") : t("promotions.card.expiresIn", { days: item.daysUntilExpiry })}
                     </div>
                 )}
             </div>
@@ -78,9 +80,9 @@ export default function Card({ item, onToggleFavorite, onSelect, isUpdating = fa
                 )}
 
                 <div className="mt-auto flex items-center justify-between text-xs text-textSecondary">
-                    {formattedExpiry && <span>Expires on {formattedExpiry}</span>}
+                    {formattedExpiry && <span>{t("promotions.card.expiresOn", { date: formattedExpiry })}</span>}
                     {daysLeft !== undefined && (
-                        <span className="font-medium text-gray-700">{daysLeft}d left</span>
+                        <span className="font-medium text-gray-700">{t("promotions.card.expiresIn", { days: daysLeft })}</span>
                     )}
                 </div>
 
