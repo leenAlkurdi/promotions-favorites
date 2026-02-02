@@ -17,7 +17,7 @@ export class GetPromotionsQueryDto {
   @Min(1)
   @Max(100)
   limit?: number;
-
+ 
   @ApiPropertyOptional({ example: 'Amazon' })
   @IsOptional()
   @IsString()

@@ -59,7 +59,7 @@ async function seed(): Promise<void> {
         'Get cashback on groceries.',
         'Valid once per user.',
         'https://picsum.photos/seed/carrefour/200',
-        7,
+        2,
       ),
       createPromotion(
         '10% Off Electronics',
@@ -69,7 +69,7 @@ async function seed(): Promise<void> {
         'Save on selected electronics.',
         'Valid on items marked eligible.',
         'https://picsum.photos/seed/amazon/200',
-        14,
+        2,
       ),
       createPromotion(
         'Cashback on Dining',
@@ -79,7 +79,7 @@ async function seed(): Promise<void> {
         'Earn cashback on restaurant orders.',
         'Max cashback 20 AED per order.',
         'https://picsum.photos/seed/talabat/200',
-        3,
+        30,
       ),
       createPromotion(
         'Fuel Savings',
@@ -89,7 +89,7 @@ async function seed(): Promise<void> {
         'Cashback on fuel purchases.',
         'Applicable to fuel only.',
         'https://picsum.photos/seed/enoc/200',
-        10,
+        30,
       ),
       createPromotion(
         'Weekend Fashion Sale',
@@ -99,7 +99,7 @@ async function seed(): Promise<void> {
         'Save on fashion items.',
         'Valid over the weekend only.',
         'https://picsum.photos/seed/namshi/200',
-        5,
+        30,
       ),
       createPromotion(
         'Gym Membership Discount',
@@ -109,7 +109,7 @@ async function seed(): Promise<void> {
         'Discount on monthly membership.',
         'New members only.',
         'https://picsum.photos/seed/fitness/200',
-        20,
+        30,
       ),
       createPromotion(
         'Hotel Booking Cashback',
@@ -139,7 +139,7 @@ async function seed(): Promise<void> {
         'Save on health essentials.',
         'Selected items only.',
         'https://picsum.photos/seed/life/200',
-        12,
+        30,
       ),
       createPromotion(
         'Travel Gear Offer',
@@ -149,7 +149,7 @@ async function seed(): Promise<void> {
         'Discount on luggage.',
         'Valid on selected items.',
         'https://picsum.photos/seed/samsonite/200',
-        9,
+        30,
       ),
       createPromotion(
         'Grocery Cashback',
@@ -159,7 +159,7 @@ async function seed(): Promise<void> {
         'Weekly grocery cashback.',
         'Valid once per week.',
         'https://picsum.photos/seed/spinneys/200',
-        6,
+        2,
       ),
       createPromotion(
         'Coffee Rewards',
@@ -169,7 +169,7 @@ async function seed(): Promise<void> {
         'Earn cashback on coffee.',
         'Valid on beverages only.',
         'https://picsum.photos/seed/starbucks/200',
-        4,
+        2,
       ),
       createPromotion(
         'Home Essentials',
@@ -179,7 +179,7 @@ async function seed(): Promise<void> {
         'Save on home essentials.',
         'Valid on selected products.',
         'https://picsum.photos/seed/ikea/200',
-        15,
+        30,
       ),
       createPromotion(
         'Streaming Offer',
@@ -189,7 +189,7 @@ async function seed(): Promise<void> {
         'Cashback on subscription.',
         'Monthly plan only.',
         'https://picsum.photos/seed/netflix/200',
-        11,
+        30,
       ),
       createPromotion(
         'Tech Accessories',
@@ -199,7 +199,7 @@ async function seed(): Promise<void> {
         'Save on tech accessories.',
         'Applies to accessories only.',
         'https://picsum.photos/seed/noon/200',
-        8,
+        30,
       ),
       createPromotion(
         'Kids Toys Cashback',
@@ -209,7 +209,7 @@ async function seed(): Promise<void> {
         'Cashback on kids toys.',
         'Selected brands only.',
         'https://picsum.photos/seed/toyrus/200',
-        13,
+        30,
       ),
       createPromotion(
         'Beauty Essentials',
@@ -219,7 +219,7 @@ async function seed(): Promise<void> {
         'Save on beauty products.',
         'Valid on select items.',
         'https://picsum.photos/seed/sephora/200',
-        1,
+        -3,
       ),
       createPromotion(
         'Pet Supplies',

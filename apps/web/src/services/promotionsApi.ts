@@ -19,9 +19,17 @@ export type PromotionsQueryParams = {
   expiresBefore?: string; // ISO date string (YYYY-MM-DD)
 };
 
+export type PaginatedPromotions = {
+  items: Promotion[];
+  page: number;
+  limit: number;
+  total: number;
+  nextPage?: number;
+};
+
 export const getPromotions = async (
   params: PromotionsQueryParams = {}
-): Promise<ApiResponse<Promotion[]>> => {
+): Promise<ApiResponse<PaginatedPromotions>> => {
   const qs = new URLSearchParams();
   if (params.page) qs.set('page', String(params.page));
   if (params.limit) qs.set('limit', String(params.limit));
@@ -30,8 +38,18 @@ export const getPromotions = async (
   if (params.expiresBefore) qs.set('expiresBefore', params.expiresBefore);
 
   const url = `/promotions${qs.toString() ? `?${qs.toString()}` : ''}`;
-  const res = await api.get<ApiResponse<Promotion[]>>(url);
+  const res = await api.get<ApiResponse<PaginatedPromotions>>(url);
   return res.data;
+};
+
+export const getMerchants = async (): Promise<string[]> => {
+  const res = await api.get('/promotions/merchants');
+  // handle controller returning raw array or ApiResponse wrapper
+  if (res && res.data) {
+    if (Array.isArray((res.data as any).data)) return (res.data as any).data as string[];
+    if (Array.isArray(res.data)) return res.data as string[];
+  }
+  return [];
 };
 
 export const getFavorites = async (

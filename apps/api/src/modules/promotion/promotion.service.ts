@@ -56,6 +56,16 @@ export class PromotionService {
 		}
 	}
 
+	async listMerchants(): Promise<string[]> {
+		const rows = await this.promotionRepo
+			.createQueryBuilder('promotion')
+			.select('DISTINCT promotion.merchant', 'merchant')
+			.orderBy('merchant', 'ASC')
+			.getRawMany();
+
+		return rows.map((r: any) => r.merchant).filter(Boolean);
+	}
+
 	private validateQuery(query: GetPromotionsQueryDto): void {
 		if (query.page !== undefined && query.page < 1) {
 			throw new BadRequestException({
@@ -99,14 +109,18 @@ export class PromotionService {
 		}
 
 		if (query.merchant) {
-			qb.andWhere('promotion.merchant = :merchant', {
+			// case-insensitive merchant match (portable across DBs)
+			qb.andWhere('LOWER(promotion.merchant) = LOWER(:merchant)', {
 				merchant: query.merchant,
 			});
 		}
 
 		if (query.expiresBefore) {
-			qb.andWhere('promotion.expiresAt < :expiresBefore', {
-				expiresBefore: query.expiresBefore,
+			// normalize expiresBefore to include the whole day (end of day)
+			const expiresDate = new Date(query.expiresBefore);
+			expiresDate.setHours(23, 59, 59, 999);
+			qb.andWhere('promotion.expiresAt <= :expiresBefore', {
+				expiresBefore: expiresDate.toISOString(),
 			});
 		}
 
@@ -122,7 +136,7 @@ export class PromotionService {
 	}
 
 	private mapToMeta(promotion: Promotion): PromotionWithFavorite {
-		const favoriteId = (promotion as Promotion & { favoriteId?: string })
+		const favoriteId = (promotion as Promotion & { favoriteId?: string | string[] })
 			.favoriteId;
 		const expiresAt = new Date(promotion.expiresAt);
 		const daysUntilExpiry = Math.ceil(
@@ -133,7 +147,8 @@ export class PromotionService {
 		return {
 			...base,
 			expiresAt: expiresAt.toISOString(),
-			isFavorite: Boolean(favoriteId),
+			isFavorite:
+				Array.isArray(favoriteId) ? favoriteId.length > 0 : Boolean(favoriteId),
 			daysUntilExpiry,
 		};
 	}

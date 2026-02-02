@@ -1,22 +1,18 @@
 "use client";
 import { useQuery } from '@/lib/query';
-import { getPromotions } from "@/services/promotionsApi";
+import { getPromotions, PaginatedPromotions, PromotionsQueryParams } from "@/services/promotionsApi";
 import { Promotion } from '@promotions-favorites/shared';
 
-import { PromotionsQueryParams } from "@/services/promotionsApi";
 export function usePromotions(filters: PromotionsQueryParams = {}) {
-  return useQuery<Promotion[], Error>({
+  return useQuery<PaginatedPromotions, Error>({
     queryKey: ['promotions', filters],
     queryFn: async () => {
       const res = await getPromotions(filters);
-      if (!res || !res.data) {
+      if (!res?.data) {
         throw new Error(res?.message ?? "Failed to load promotions");
       }
-      return res.data;
+      return res.data as PaginatedPromotions;
     },
     placeholderData: (previousData) => previousData,
-    staleTime: 30_000,
   });
 }
-
-export default usePromotions;

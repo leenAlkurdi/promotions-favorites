@@ -29,6 +29,13 @@ export class PromotionController {
     private readonly favoriteService: FavoriteService,
   ) {}
 
+  @Get('merchants')
+  @ApiOperation({ summary: 'List distinct merchants' })
+  @ApiOkResponse({ description: 'Merchants retrieved' })
+  async getMerchants() {
+    return this.promotionService.listMerchants();
+  }
+
   @Get()
   @UseGuards(MockAuthGuard)
   @ApiOperation({ summary: 'List promotions with filters and pagination' })
