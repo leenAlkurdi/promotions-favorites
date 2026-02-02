@@ -11,8 +11,26 @@ export const unfavoritePromotion = async (promotionId: string): Promise<ApiRespo
   return res.data;
 };
 
-export const getPromotions = async (): Promise<ApiResponse<Promotion[]>> => {
-  const res = await api.get<ApiResponse<Promotion[]>>('/promotions');
+export type PromotionsQueryParams = {
+  page?: number;
+  limit?: number;
+  q?: string;
+  merchant?: string;
+  expiresBefore?: string; // ISO date string (YYYY-MM-DD)
+};
+
+export const getPromotions = async (
+  params: PromotionsQueryParams = {}
+): Promise<ApiResponse<Promotion[]>> => {
+  const qs = new URLSearchParams();
+  if (params.page) qs.set('page', String(params.page));
+  if (params.limit) qs.set('limit', String(params.limit));
+  if (params.q) qs.set('q', params.q);
+  if (params.merchant) qs.set('merchant', params.merchant);
+  if (params.expiresBefore) qs.set('expiresBefore', params.expiresBefore);
+
+  const url = `/promotions${qs.toString() ? `?${qs.toString()}` : ''}`;
+  const res = await api.get<ApiResponse<Promotion[]>>(url);
   return res.data;
 };
 

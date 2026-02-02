@@ -3,11 +3,12 @@ import { useQuery } from '@/lib/query';
 import { getPromotions } from "@/services/promotionsApi";
 import { Promotion } from '@promotions-favorites/shared';
 
-export function usePromotions() {
+import { PromotionsQueryParams } from "@/services/promotionsApi";
+export function usePromotions(filters: PromotionsQueryParams = {}) {
   return useQuery<Promotion[], Error>({
-    queryKey: ["promotions"],
+    queryKey: ['promotions', filters],
     queryFn: async () => {
-      const res = await getPromotions();
+      const res = await getPromotions(filters);
       if (!res || !res.data) {
         throw new Error(res?.message ?? "Failed to load promotions");
       }
