@@ -23,17 +23,27 @@ export default function PromotionsPage() {
   const merchant = searchParams.get("merchant") ?? undefined;
   const expiresBefore = searchParams.get("expiresBefore") ?? undefined;
 
-  const { data, isLoading } = usePromotions({ page, limit, q: q || undefined, merchant, expiresBefore } as any);
+  const { data, isLoading } = usePromotions({
+    page,
+    limit,
+    q: q || undefined,
+    merchant,
+    expiresBefore,
+  } as any);
 
   const handlePrev = () => {
     if (page <= 1) return;
-    const params = new URLSearchParams(Object.fromEntries(searchParams.entries()));
+    const params = new URLSearchParams(
+      Object.fromEntries(searchParams.entries()),
+    );
     params.set("page", String(page - 1));
     router.replace(`/promotions?${params.toString()}`);
   };
 
   const handleNext = () => {
-    const params = new URLSearchParams(Object.fromEntries(searchParams.entries()));
+    const params = new URLSearchParams(
+      Object.fromEntries(searchParams.entries()),
+    );
     params.set("page", String(page + 1));
     router.replace(`/promotions?${params.toString()}`);
   };
@@ -47,7 +57,9 @@ export default function PromotionsPage() {
     const expiresAt = new Date(p.expiresAt);
     const now = new Date();
     const diffMs = expiresAt.getTime() - now.getTime();
-    const daysUntilExpiry = p.daysUntilExpiry ?? Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+    const daysUntilExpiry =
+      p.daysUntilExpiry ??
+      Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
     return {
       ...p,
       isFavorite: Boolean(p.isFavorite),
@@ -69,9 +81,7 @@ export default function PromotionsPage() {
           {t("pagination.prev")}
         </button>
 
-        <span>
-          {t("pagination.page", { page: `${currentPage}` })}
-        </span>
+        <span>{t("pagination.page", { page: `${currentPage}` })}</span>
 
         <button
           className="px-3 py-1 rounded bg-gray-100 disabled:opacity-50"

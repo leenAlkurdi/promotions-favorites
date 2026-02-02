@@ -19,13 +19,9 @@ export default function EmptyState({
           <Tag className="h-10 w-10 text-textMuted" />
         </div>
 
-        <h2 className="text-lg font-semibold mb-2 text-textPrimary">
-          {title}
-        </h2>
+        <h2 className="text-lg font-semibold mb-2 text-textPrimary">{title}</h2>
 
-        <p className="text-sm text-textSecondary mb-5">
-          {body}
-        </p>
+        <p className="text-sm text-textSecondary mb-5">{body}</p>
 
         <Link
           href="/promotions"

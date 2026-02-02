@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Web (Next.js)
 
-## Getting Started
+Frontend for Promotions/Favorites using Next.js (App Router), React Query, Tailwind, and i18next (en/ar with RTL support).
 
-First, run the development server:
+### Prerequisites
+- Node 20+
+- npm workspaces (run commands from repo root unless noted)
+- API reachable at http://localhost:3001/api by default
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Environment
+Copy `.env.example` to `.env` and adjust if API URL changes:
+```
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install
+From repo root:
+```
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Run
+- Dev: `npm run dev --workspace web`
+- Build: `npm run build --workspace web`
+- Start (after build): `npm run start --workspace web`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Tests
+- Unit (Jest + React Testing Library): `npm run test --workspace web`
+- E2E (Playwright):
+  1) Install browsers once: `npx playwright install`
+  2) Headed/debug: `npm run test:e2e:headed --workspace web`
 
-## Learn More
+### Lint & Format
+- Lint: `npm run lint --workspace web`
+- Format (Prettier): `npm run format --workspace web`
 
-To learn more about Next.js, take a look at the following resources:
+### i18n / RTL
+- Locales in `public/locales/en` and `public/locales/ar`
+- Direction handled via `DirectionProvider` and navbar language toggle
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Architecture Snapshot
+- App routes: `src/app/promotions`, `src/app/favorites`
+- Features: `src/features/promotions`, `src/features/favorites`
+- Shared components: `src/components` (Card/List/Navbar/etc.)
+- Data fetching: Axios client in `src/services/api.ts`; React Query hooks in `src/features/**/hooks`
+- Toasts: `src/lib/ToastProvider.tsx`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Troubleshooting
+- Ensure API is running and `NEXT_PUBLIC_API_URL` matches it.
+- If Playwright server port differs, set `baseURL` in `playwright.config.ts`.
+- After adding new locale strings, restart dev server to reload resources.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

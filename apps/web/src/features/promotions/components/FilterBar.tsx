@@ -28,11 +28,13 @@ export default function FilterBar({
 
   const [q] = useState(initial.q ?? "");
   const [merchant, setMerchant] = useState(initial.merchant ?? "");
-  const [expiresBefore, setExpiresBefore] = useState(initial.expiresBefore ?? "");
+  const [expiresBefore, setExpiresBefore] = useState(
+    initial.expiresBefore ?? "",
+  );
   const [merchantsList, setMerchantsList] = useState<string[]>(merchants);
   const [open, setOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState<boolean>(
-    typeof window !== "undefined" ? window.innerWidth >= 640 : true
+    typeof window !== "undefined" ? window.innerWidth >= 640 : true,
   );
   const [isRtl, setIsRtl] = useState<boolean>(false);
 
@@ -75,7 +77,7 @@ export default function FilterBar({
     onChange?.(filters);
 
     const params = new URLSearchParams(
-      typeof window !== "undefined" ? window.location.search : ""
+      typeof window !== "undefined" ? window.location.search : "",
     );
 
     if (filters.q) params.set("q", filters.q);
@@ -84,7 +86,8 @@ export default function FilterBar({
     if (filters.merchant) params.set("merchant", filters.merchant);
     else params.delete("merchant");
 
-    if (filters.expiresBefore) params.set("expiresBefore", filters.expiresBefore);
+    if (filters.expiresBefore)
+      params.set("expiresBefore", filters.expiresBefore);
     else params.delete("expiresBefore");
 
     params.set("page", "1");
@@ -101,8 +104,9 @@ export default function FilterBar({
   return (
     <>
       <div className="hidden sm:flex items-center justify-between mb-5">
-
-        <div className={`flex items-center gap-2 ${isRtl ? "flex-row-reverse" : ""}`}>
+        <div
+          className={`flex items-center gap-2 ${isRtl ? "flex-row-reverse" : ""}`}
+        >
           <div className="h-11 w-11 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md bg-input text-textMuted">
             <SlidersHorizontal size={18} />
           </div>
@@ -156,18 +160,24 @@ export default function FilterBar({
             onClick={() => setOpen(false)}
           />
 
-          <div className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4 space-y-4 max-h-[80vh] overflow-auto ${isRtl ? "direction-rtl" : ""}`}
+          <div
+            className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4 space-y-4 max-h-[80vh] overflow-auto ${isRtl ? "direction-rtl" : ""}`}
             dir={isRtl ? "rtl" : "ltr"}
           >
             <div className="flex items-center justify-between">
               <span className="font-medium">{t("filters.title")}</span>
-              <button className="text-lg h-11 w-11 min-h-[44px] min-w-[44px] flex items-center justify-center" onClick={() => setOpen(false)}>
+              <button
+                className="text-lg h-11 w-11 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                onClick={() => setOpen(false)}
+              >
                 ✕
               </button>
             </div>
 
             <div className="space-y-3">
-              <label className="block text-sm text-textMuted">{t("filters.merchant")}</label>
+              <label className="block text-sm text-textMuted">
+                {t("filters.merchant")}
+              </label>
               <select
                 value={merchant}
                 onChange={(e) => setMerchant(e.target.value)}
@@ -181,7 +191,9 @@ export default function FilterBar({
                 ))}
               </select>
 
-              <label className="block text-sm text-textMuted">{t("filters.expiresBefore")}</label>
+              <label className="block text-sm text-textMuted">
+                {t("filters.expiresBefore")}
+              </label>
               <input
                 type="date"
                 value={expiresBefore}

@@ -1,6 +1,10 @@
 "use client";
 import { useQuery } from "@/lib/query";
-import { getPromotions, PaginatedPromotions, PromotionsQueryParams } from "../services/promotionsApi";
+import {
+  getPromotions,
+  PaginatedPromotions,
+  PromotionsQueryParams,
+} from "../services/promotionsApi";
 
 export function usePromotions(filters: PromotionsQueryParams = {}) {
   return useQuery<PaginatedPromotions, Error>({

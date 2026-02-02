@@ -33,7 +33,9 @@ export function LanguageToggle() {
       className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white hover:bg-accent hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 active:scale-95 cursor-pointer transition"
     >
       <Languages className="h-5 w-5" />
-      <span className="sr-only">{nextLocale === "ar" ? "التبديل إلى العربية" : "Switch to English"}</span>
+      <span className="sr-only">
+        {nextLocale === "ar" ? "التبديل إلى العربية" : "Switch to English"}
+      </span>
     </button>
   );
 }

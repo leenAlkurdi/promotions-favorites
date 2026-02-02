@@ -1,9 +1,9 @@
 import {
-	Column,
-	CreateDateColumn,
-	Entity,
-	Index,
-	PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('audit_events')
@@ -11,21 +11,21 @@ import {
 @Index(['promotionId'])
 @Index(['timestamp'])
 export class AuditEvent {
-	@PrimaryGeneratedColumn('uuid')
-	id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-	@Column()
-	userId: string;
+  @Column()
+  userId: string;
 
-	@Column()
-	promotionId: string;
+  @Column()
+  promotionId: string;
 
-	@Column()
-	action: string;
+  @Column()
+  action: string;
 
-	@Column({ nullable: true })
-	traceId?: string;
+  @Column({ nullable: true })
+  traceId?: string;
 
-	@CreateDateColumn({ type: 'datetime' })
-	timestamp: Date;
+  @CreateDateColumn({ type: 'datetime' })
+  timestamp: Date;
 }

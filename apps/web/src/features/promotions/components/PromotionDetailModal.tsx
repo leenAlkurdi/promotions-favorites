@@ -15,14 +15,21 @@ const daysLeft = (expiresAt?: string) => {
   return Math.max(Math.ceil(diff / (1000 * 60 * 60 * 24)), 0);
 };
 
-export default function PromotionDetailModal({ promotion, onClose, onToggleFavorite }: Props) {
+export default function PromotionDetailModal({
+  promotion,
+  onClose,
+  onToggleFavorite,
+}: Props) {
   const { t } = useTranslation();
-  const rawRemainingDays = promotion.daysUntilExpiry ?? daysLeft(promotion.expiresAt);
+  const rawRemainingDays =
+    promotion.daysUntilExpiry ?? daysLeft(promotion.expiresAt);
   const remainingDays = Math.max(rawRemainingDays, 0);
   const isExpired = rawRemainingDays < 0;
   const progress = Math.min(100, Math.max(0, 100 - (remainingDays / 30) * 100));
   const isFavorite = Boolean(promotion.isFavorite);
-  const formattedExpiry = promotion.expiresAt ? new Date(promotion.expiresAt).toLocaleDateString() : undefined;
+  const formattedExpiry = promotion.expiresAt
+    ? new Date(promotion.expiresAt).toLocaleDateString()
+    : undefined;
 
   const handleShare = () => {
     const payload = {
@@ -51,8 +58,12 @@ export default function PromotionDetailModal({ promotion, onClose, onToggleFavor
       >
         <div className="flex items-center justify-between border-b px-5 py-3">
           <div>
-            <p className="text-xs uppercase text-textSecondary">{t("promotions.detail.title")}</p>
-            <h2 className="text-lg font-semibold text-textPrimary">{promotion.title}</h2>
+            <p className="text-xs uppercase text-textSecondary">
+              {t("promotions.detail.title")}
+            </p>
+            <h2 className="text-lg font-semibold text-textPrimary">
+              {promotion.title}
+            </h2>
           </div>
           <button
             aria-label={t("actions.close")}
@@ -82,12 +93,18 @@ export default function PromotionDetailModal({ promotion, onClose, onToggleFavor
               </span>
               <button
                 className={`flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition ${
-                  isFavorite ? "border-red-500 text-red-600 bg-red-50" : "border-gray-300 text-textPrimary"
+                  isFavorite
+                    ? "border-red-500 text-red-600 bg-red-50"
+                    : "border-gray-300 text-textPrimary"
                 }`}
                 onClick={() => onToggleFavorite(promotion.id, !isFavorite)}
               >
-                <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 stroke-red-500" : "stroke-current"}`} />
-                {isFavorite ? t("promotions.card.unfavorite") : t("promotions.card.favorite")}
+                <Heart
+                  className={`h-4 w-4 ${isFavorite ? "fill-red-500 stroke-red-500" : "stroke-current"}`}
+                />
+                {isFavorite
+                  ? t("promotions.card.unfavorite")
+                  : t("promotions.card.favorite")}
               </button>
               <button
                 className="flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium text-textPrimary hover:border-primary"
@@ -102,23 +119,42 @@ export default function PromotionDetailModal({ promotion, onClose, onToggleFavor
           <div className="space-y-2">
             <div
               className="h-2 w-full rounded-full bg-gray-100 overflow-hidden"
-              aria-label={formattedExpiry ? t("promotions.detail.expiryBadge", { date: formattedExpiry }) : undefined}
+              aria-label={
+                formattedExpiry
+                  ? t("promotions.detail.expiryBadge", {
+                      date: formattedExpiry,
+                    })
+                  : undefined
+              }
             >
-              <div className="h-full bg-primary" style={{ width: `${progress}%` }} />
+              <div
+                className="h-full bg-primary"
+                style={{ width: `${progress}%` }}
+              />
             </div>
             <p className="text-xs text-textSecondary">
-              {isExpired ? t("promotions.card.expired") : t("promotions.card.expiresIn", { days: remainingDays })}
+              {isExpired
+                ? t("promotions.card.expired")
+                : t("promotions.card.expiresIn", { days: remainingDays })}
             </p>
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-textPrimary">{t("promotions.detail.description")}</h3>
-            <p className="text-sm text-textSecondary leading-relaxed">{promotion.description}</p>
+            <h3 className="text-sm font-semibold text-textPrimary">
+              {t("promotions.detail.description")}
+            </h3>
+            <p className="text-sm text-textSecondary leading-relaxed">
+              {promotion.description}
+            </p>
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-textPrimary">{t("promotions.detail.terms")}</h3>
-            <p className="text-sm text-textSecondary leading-relaxed whitespace-pre-line">{promotion.terms}</p>
+            <h3 className="text-sm font-semibold text-textPrimary">
+              {t("promotions.detail.terms")}
+            </h3>
+            <p className="text-sm text-textSecondary leading-relaxed whitespace-pre-line">
+              {promotion.terms}
+            </p>
           </div>
         </div>
       </div>

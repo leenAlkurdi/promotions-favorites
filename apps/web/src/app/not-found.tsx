@@ -8,7 +8,8 @@ export default function NotFound() {
       </div>
       <h1 className="text-2xl font-semibold">Page not found</h1>
       <p className="text-sm text-textSecondary">
-        The page you are looking for does not exist. Check the address or head back to promotions.
+        The page you are looking for does not exist. Check the address or head
+        back to promotions.
       </p>
       <div className="flex items-center justify-center gap-3">
         <Link

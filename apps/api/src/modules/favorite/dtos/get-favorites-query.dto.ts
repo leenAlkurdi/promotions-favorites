@@ -18,7 +18,9 @@ export class GetFavoritesQueryDto {
   @Max(100)
   limit?: number;
 
-  @ApiPropertyOptional({ description: 'Cursor in the format <expiresAt>|<promotionId>' })
+  @ApiPropertyOptional({
+    description: 'Cursor in the format <expiresAt>|<promotionId>',
+  })
   @IsOptional()
   @IsString()
   cursor?: string;

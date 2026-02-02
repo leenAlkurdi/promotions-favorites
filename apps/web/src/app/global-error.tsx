@@ -1,7 +1,13 @@
 "use client";
 import { useEffect } from "react";
 
-export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -15,7 +21,8 @@ export default function GlobalError({ error, reset }: { error: Error; reset: () 
           </div>
           <h1 className="text-2xl font-semibold">Something went wrong</h1>
           <p className="text-sm text-textSecondary">
-            An unexpected error occurred. You can try again or go back to promotions.
+            An unexpected error occurred. You can try again or go back to
+            promotions.
           </p>
           <div className="flex items-center justify-center gap-3">
             <button

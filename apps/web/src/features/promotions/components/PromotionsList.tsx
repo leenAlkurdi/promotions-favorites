@@ -34,16 +34,24 @@ const toCardItem = (promotion: PromotionWithFavorite): CardItem => ({
   daysUntilExpiry: promotion.daysUntilExpiry ?? daysUntil(promotion.expiresAt),
 });
 
-export default function PromotionsList({ promotions = [], isLoading = false, view = "grid" }: Props) {
+export default function PromotionsList({
+  promotions = [],
+  isLoading = false,
+  view = "grid",
+}: Props) {
   const favoriteMutation = useFavoritePromotion();
   const unfavoriteMutation = useUnfavoritePromotion();
   const [selected, setSelected] = useState<PromotionWithFavorite | null>(null);
   const { t } = useTranslation();
 
-  const isUpdating = favoriteMutation.status === "pending" || unfavoriteMutation.status === "pending";
+  const isUpdating =
+    favoriteMutation.status === "pending" ||
+    unfavoriteMutation.status === "pending";
 
   const toggleFavorite = (id: string, nextIsFavorite: boolean) => {
-    setSelected((prev) => (prev && prev.id === id ? { ...prev, isFavorite: nextIsFavorite } : prev));
+    setSelected((prev) =>
+      prev && prev.id === id ? { ...prev, isFavorite: nextIsFavorite } : prev,
+    );
 
     if (nextIsFavorite) {
       favoriteMutation.mutate(id);

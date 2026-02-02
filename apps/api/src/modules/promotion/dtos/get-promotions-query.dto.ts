@@ -1,6 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDateString, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import {
+  IsDateString,
+  IsInt,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class GetPromotionsQueryDto {
   @ApiPropertyOptional({ example: 1, minimum: 1 })
@@ -17,7 +24,7 @@ export class GetPromotionsQueryDto {
   @Min(1)
   @Max(100)
   limit?: number;
- 
+
   @ApiPropertyOptional({ example: 'Amazon' })
   @IsOptional()
   @IsString()

@@ -14,18 +14,26 @@ export function useUnfavoritePromotion() {
       await queryClient.cancelQueries({ queryKey: ["promotions"] });
       await queryClient.cancelQueries({ queryKey: ["favorites"] });
 
-      const previousPromotions = queryClient.getQueriesData({ queryKey: ["promotions"] });
-      const previousFavorites = queryClient.getQueriesData({ queryKey: ["favorites"] });
+      const previousPromotions = queryClient.getQueriesData({
+        queryKey: ["promotions"],
+      });
+      const previousFavorites = queryClient.getQueriesData({
+        queryKey: ["favorites"],
+      });
 
       previousPromotions.forEach(([key]) => {
         queryClient.setQueryData(key as any, (old: any) => {
           if (!old || (!Array.isArray(old) && !old.items)) return old;
           if (Array.isArray(old)) {
-            return old.map((p: any) => (p.id === promotionId ? { ...p, isFavorite: false } : p));
+            return old.map((p: any) =>
+              p.id === promotionId ? { ...p, isFavorite: false } : p,
+            );
           }
           return {
             ...old,
-            items: (old.items || []).map((p: any) => (p.id === promotionId ? { ...p, isFavorite: false } : p)),
+            items: (old.items || []).map((p: any) =>
+              p.id === promotionId ? { ...p, isFavorite: false } : p,
+            ),
           };
         });
       });

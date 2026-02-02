@@ -6,13 +6,18 @@ type FavoritesQuery = {
   cursor?: string | null;
 };
 
-export const getFavorites = async ({ limit = 10, cursor = null }: FavoritesQuery = {}): Promise<ApiResponse<FavoritesResponse>> => {
+export const getFavorites = async ({
+  limit = 10,
+  cursor = null,
+}: FavoritesQuery = {}): Promise<ApiResponse<FavoritesResponse>> => {
   const params = new URLSearchParams();
   params.set("limit", String(limit));
   if (cursor) {
     params.set("cursor", cursor);
   }
 
-  const res = await api.get<ApiResponse<FavoritesResponse>>(`/promotions/favorites?${params.toString()}`);
+  const res = await api.get<ApiResponse<FavoritesResponse>>(
+    `/promotions/favorites?${params.toString()}`,
+  );
   return res.data;
 };

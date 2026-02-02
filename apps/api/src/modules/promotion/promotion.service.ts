@@ -1,7 +1,7 @@
 import {
-	BadRequestException,
-	Injectable,
-	InternalServerErrorException,
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository, SelectQueryBuilder } from 'typeorm';
@@ -12,144 +12,141 @@ import { ErrorCode, PromotionWithFavorite } from '@promotions-favorites/shared';
 
 @Injectable()
 export class PromotionService {
-	constructor(
-		@InjectRepository(Promotion)
-		private readonly promotionRepo: Repository<Promotion>,
-	) {}
+  constructor(
+    @InjectRepository(Promotion)
+    private readonly promotionRepo: Repository<Promotion>,
+  ) {}
 
-	async findAll(
-		query: GetPromotionsQueryDto,
-		userId: string,
-	): Promise<{
-		items: PromotionWithFavorite[];
-		page: number;
-		limit: number;
-		total: number;
-	}> {
-		try {
-			this.validateQuery(query);
+  async findAll(
+    query: GetPromotionsQueryDto,
+    userId: string,
+  ): Promise<{
+    items: PromotionWithFavorite[];
+    page: number;
+    limit: number;
+    total: number;
+  }> {
+    try {
+      this.validateQuery(query);
 
-			const page = query.page ?? PAGINATION_DEFAULTS.PAGE;
-			const limit = Math.min(
-				query.limit ?? PAGINATION_DEFAULTS.LIMIT,
-				PAGINATION_DEFAULTS.MAX_LIMIT,
-			);
-			const offset = (page - 1) * limit;
+      const page = query.page ?? PAGINATION_DEFAULTS.PAGE;
+      const limit = Math.min(
+        query.limit ?? PAGINATION_DEFAULTS.LIMIT,
+        PAGINATION_DEFAULTS.MAX_LIMIT,
+      );
+      const offset = (page - 1) * limit;
 
-			const qb = this.buildPromotionQuery(query, userId)
-				.orderBy('promotion.expiresAt', 'ASC')
-				.skip(offset)
-				.take(limit);
+      const qb = this.buildPromotionQuery(query, userId)
+        .orderBy('promotion.expiresAt', 'ASC')
+        .skip(offset)
+        .take(limit);
 
-			const [entities, total] = await qb.getManyAndCount();
-			const items = entities.map((promotion) => this.mapToMeta(promotion));
+      const [entities, total] = await qb.getManyAndCount();
+      const items = entities.map((promotion) => this.mapToMeta(promotion));
 
-			return { items, page, limit, total };
-		} catch (error) {
-			if (error instanceof QueryFailedError) {
-				throw new InternalServerErrorException({
-					message: 'Database error',
-					errorCode: ErrorCode.DATABASE_ERROR,
-				});
-			}
-			throw error;
-		}
-	}
+      return { items, page, limit, total };
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new InternalServerErrorException({
+          message: 'Database error',
+          errorCode: ErrorCode.DATABASE_ERROR,
+        });
+      }
+      throw error;
+    }
+  }
 
-	async listMerchants(): Promise<string[]> {
-		const rows = await this.promotionRepo
-			.createQueryBuilder('promotion')
-			.select('DISTINCT promotion.merchant', 'merchant')
-			.orderBy('merchant', 'ASC')
-			.getRawMany();
+  async listMerchants(): Promise<string[]> {
+    const rows = await this.promotionRepo
+      .createQueryBuilder('promotion')
+      .select('DISTINCT promotion.merchant', 'merchant')
+      .orderBy('merchant', 'ASC')
+      .getRawMany();
 
-		return rows.map((r: any) => r.merchant).filter(Boolean);
-	}
+    return rows.map((r: any) => r.merchant).filter(Boolean);
+  }
 
-	private validateQuery(query: GetPromotionsQueryDto): void {
-		if (query.page !== undefined && query.page < 1) {
-			throw new BadRequestException({
-				message: 'Invalid page value',
-				errorCode: ErrorCode.INVALID_PAGINATION,
-			});
-		}
+  private validateQuery(query: GetPromotionsQueryDto): void {
+    if (query.page !== undefined && query.page < 1) {
+      throw new BadRequestException({
+        message: 'Invalid page value',
+        errorCode: ErrorCode.INVALID_PAGINATION,
+      });
+    }
 
-		if (
-			query.limit !== undefined &&
-			(query.limit < 1 || query.limit > PAGINATION_DEFAULTS.MAX_LIMIT)
-		) {
-			throw new BadRequestException({
-				message: 'Invalid limit value',
-				errorCode: ErrorCode.INVALID_PAGINATION,
-			});
-		}
+    if (
+      query.limit !== undefined &&
+      (query.limit < 1 || query.limit > PAGINATION_DEFAULTS.MAX_LIMIT)
+    ) {
+      throw new BadRequestException({
+        message: 'Invalid limit value',
+        errorCode: ErrorCode.INVALID_PAGINATION,
+      });
+    }
 
-		if (
-			query.expiresBefore &&
-			Number.isNaN(Date.parse(query.expiresBefore))
-		) {
-			throw new BadRequestException({
-				message: 'Invalid expiresBefore value',
-				errorCode: ErrorCode.INVALID_QUERY,
-			});
-		}
-	}
+    if (query.expiresBefore && Number.isNaN(Date.parse(query.expiresBefore))) {
+      throw new BadRequestException({
+        message: 'Invalid expiresBefore value',
+        errorCode: ErrorCode.INVALID_QUERY,
+      });
+    }
+  }
 
-	private buildPromotionQuery(
-		query: GetPromotionsQueryDto,
-		userId: string,
-	): SelectQueryBuilder<Promotion> {
-		const qb = this.promotionRepo.createQueryBuilder('promotion');
+  private buildPromotionQuery(
+    query: GetPromotionsQueryDto,
+    userId: string,
+  ): SelectQueryBuilder<Promotion> {
+    const qb = this.promotionRepo.createQueryBuilder('promotion');
 
-		if (query.q) {
-			qb.andWhere(
-				'(promotion.title LIKE :q OR promotion.merchant LIKE :q)',
-				{ q: `%${query.q}%` },
-			);
-		}
+    if (query.q) {
+      qb.andWhere('(promotion.title LIKE :q OR promotion.merchant LIKE :q)', {
+        q: `%${query.q}%`,
+      });
+    }
 
-		if (query.merchant) {
-			// case-insensitive merchant match (portable across DBs)
-			qb.andWhere('LOWER(promotion.merchant) = LOWER(:merchant)', {
-				merchant: query.merchant,
-			});
-		}
+    if (query.merchant) {
+      // case-insensitive merchant match (portable across DBs)
+      qb.andWhere('LOWER(promotion.merchant) = LOWER(:merchant)', {
+        merchant: query.merchant,
+      });
+    }
 
-		if (query.expiresBefore) {
-			// normalize expiresBefore to include the whole day (end of day)
-			const expiresDate = new Date(query.expiresBefore);
-			expiresDate.setHours(23, 59, 59, 999);
-			qb.andWhere('promotion.expiresAt <= :expiresBefore', {
-				expiresBefore: expiresDate.toISOString(),
-			});
-		}
+    if (query.expiresBefore) {
+      // normalize expiresBefore to include the whole day (end of day)
+      const expiresDate = new Date(query.expiresBefore);
+      expiresDate.setHours(23, 59, 59, 999);
+      qb.andWhere('promotion.expiresAt <= :expiresBefore', {
+        expiresBefore: expiresDate.toISOString(),
+      });
+    }
 
-		qb.loadRelationIdAndMap(
-			'promotion.favoriteId',
-			'promotion.favorites',
-			'favorite',
-			(subQb) =>
-				subQb.andWhere('favorite.userId = :userId', { userId }),
-		);
+    qb.loadRelationIdAndMap(
+      'promotion.favoriteId',
+      'promotion.favorites',
+      'favorite',
+      (subQb) => subQb.andWhere('favorite.userId = :userId', { userId }),
+    );
 
-		return qb;
-	}
+    return qb;
+  }
 
-	private mapToMeta(promotion: Promotion): PromotionWithFavorite {
-		const favoriteId = (promotion as Promotion & { favoriteId?: string | string[] })
-			.favoriteId;
-		const expiresAt = new Date(promotion.expiresAt);
-		const daysUntilExpiry = Math.ceil(
-			(expiresAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000),
-		);
-		const { favorites, ...base } = promotion;
+  private mapToMeta(promotion: Promotion): PromotionWithFavorite {
+    const favoriteId = (
+      promotion as Promotion & { favoriteId?: string | string[] }
+    ).favoriteId;
+    const expiresAt = new Date(promotion.expiresAt);
+    const daysUntilExpiry = Math.ceil(
+      (expiresAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000),
+    );
+    const { favorites, ...base } = promotion;
 
-		return {
-			...base,
-			expiresAt: expiresAt.toISOString(),
-			isFavorite:
-				Array.isArray(favoriteId) ? favoriteId.length > 0 : Boolean(favoriteId),
-			daysUntilExpiry,
-		};
-	}
+    return {
+      ...base,
+      expiresAt: expiresAt.toISOString(),
+      isFavorite: Array.isArray(favoriteId)
+        ? favoriteId.length > 0
+        : Boolean(favoriteId),
+      daysUntilExpiry,
+    };
+  }
 }

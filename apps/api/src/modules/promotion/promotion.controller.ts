@@ -1,4 +1,13 @@
-import { Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -54,7 +63,9 @@ export class PromotionController {
   @ApiOperation({ summary: 'Add promotion to favorites' })
   @ApiParam({ name: 'promotionId', format: 'uuid' })
   @ApiCreatedResponse({ description: 'Favorite created or already exists' })
-  @ApiBadRequestResponse({ description: 'Promotion expired or invalid request' })
+  @ApiBadRequestResponse({
+    description: 'Promotion expired or invalid request',
+  })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   addFavorite(
     @Param() params: FavoriteParamsDto,

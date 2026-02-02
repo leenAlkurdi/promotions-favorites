@@ -55,7 +55,7 @@ describe('AuditEventService', () => {
       getRepository: jest.fn().mockReturnValue(managerRepo),
     };
 
-    await service.logEvent('user-1', 'promo-1', 'UNFAVORITE', manager as any);
+    await service.logEvent('user-1', 'promo-1', 'UNFAVORITE', undefined, manager as any);
 
     expect(manager.getRepository).toHaveBeenCalledWith(AuditEvent);
     expect(managerRepo.save).toHaveBeenCalled();

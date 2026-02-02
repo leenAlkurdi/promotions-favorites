@@ -19,7 +19,9 @@ export default function List({
   const layout = `grid gap-4 ${view === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`;
 
   if (isLoading) {
-    const skeletons = Array.from({ length: skeletonCount }).map((_, i) => <CardSkeleton key={i} />);
+    const skeletons = Array.from({ length: skeletonCount }).map((_, i) => (
+      <CardSkeleton key={i} />
+    ));
     return <div className={layout}>{skeletons}</div>;
   }
 

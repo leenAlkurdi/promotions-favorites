@@ -17,7 +17,6 @@ import { UserModule } from './modules/user/user.module';
     PromotionModule,
     FavoriteModule,
     UserModule,
-
   ],
 })
-export class AppModule { }
+export class AppModule {}

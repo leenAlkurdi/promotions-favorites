@@ -1,6 +1,10 @@
 export function CardSkeleton() {
   return (
-    <div role="status" aria-live="polite" className="animate-pulse bg-white rounded-lg shadow-sm overflow-hidden">
+    <div
+      role="status"
+      aria-live="polite"
+      className="animate-pulse bg-white rounded-lg shadow-sm overflow-hidden"
+    >
       <div className="h-44 w-full bg-gray-200" />
       <div className="p-3">
         <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />

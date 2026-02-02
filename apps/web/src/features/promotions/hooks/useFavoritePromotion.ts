@@ -12,17 +12,23 @@ export function useFavoritePromotion() {
     onMutate: async (promotionId: string) => {
       await queryClient.cancelQueries({ queryKey: ["promotions"] });
 
-      const previousPromotions = queryClient.getQueriesData({ queryKey: ["promotions"] });
+      const previousPromotions = queryClient.getQueriesData({
+        queryKey: ["promotions"],
+      });
 
       previousPromotions.forEach(([key]) => {
         queryClient.setQueryData(key as any, (old: any) => {
           if (!old) return old;
           if (Array.isArray(old)) {
-            return old.map((p: any) => (p.id === promotionId ? { ...p, isFavorite: !p.isFavorite } : p));
+            return old.map((p: any) =>
+              p.id === promotionId ? { ...p, isFavorite: !p.isFavorite } : p,
+            );
           }
           return {
             ...old,
-            items: (old.items || []).map((p: any) => (p.id === promotionId ? { ...p, isFavorite: !p.isFavorite } : p)),
+            items: (old.items || []).map((p: any) =>
+              p.id === promotionId ? { ...p, isFavorite: !p.isFavorite } : p,
+            ),
           };
         });
       });

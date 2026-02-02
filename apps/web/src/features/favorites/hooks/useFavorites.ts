@@ -4,7 +4,13 @@ import { getFavorites } from "../services/favoritesApi";
 import { FavoritesResponse } from "@promotions-favorites/shared";
 
 export function useFavorites(limit = 9) {
-  const query = useInfiniteQuery<FavoritesResponse, Error, InfiniteData<FavoritesResponse>, ["favorites", number], string | null>({
+  const query = useInfiniteQuery<
+    FavoritesResponse,
+    Error,
+    InfiniteData<FavoritesResponse>,
+    ["favorites", number],
+    string | null
+  >({
     queryKey: ["favorites", limit],
     queryFn: async ({ pageParam }) => {
       const res = await getFavorites({ cursor: pageParam ?? null, limit });

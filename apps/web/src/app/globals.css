@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #6B50FF;
+  --color-primary: #6b50ff;
   --color-secondary: #2f4cff;
   --color-accent: #8b7cff;
 
@@ -13,10 +13,9 @@
   --color-text-secondary: #44475a;
   --color-text-muted: #8a8ca3;
 
-  --color-button-bg: #6B50FF;
+  --color-button-bg: #6b50ff;
   --color-button-text: #ffffff;
 }
-
 
 html,
 body {
@@ -27,5 +26,3 @@ body {
   background: var(--color-main);
   color: var(--color-text-primary);
 }
-
-

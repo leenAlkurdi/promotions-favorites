@@ -1,4 +1,8 @@
-import { BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
@@ -18,11 +22,14 @@ describe('FavoriteService', () => {
     innerJoinAndSelect: jest.fn().mockReturnThis(),
     innerJoin: jest.fn().mockReturnThis(),
     select: jest.fn().mockReturnThis(),
+    addSelect: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
-    skip: jest.fn().mockReturnThis(),
+    addOrderBy: jest.fn().mockReturnThis(),
+    setParameter: jest.fn().mockReturnThis(),
     take: jest.fn().mockReturnThis(),
-    getManyAndCount: jest.fn(),
+    getMany: jest.fn(),
     getRawOne: jest.fn(),
   });
 
@@ -62,8 +69,12 @@ describe('FavoriteService', () => {
     }).compile();
 
     service = module.get<FavoriteService>(FavoriteService);
-    favoriteRepo = module.get<Repository<Favorite>>(getRepositoryToken(Favorite));
-    promotionRepo = module.get<Repository<Promotion>>(getRepositoryToken(Promotion));
+    favoriteRepo = module.get<Repository<Favorite>>(
+      getRepositoryToken(Favorite),
+    );
+    promotionRepo = module.get<Repository<Promotion>>(
+      getRepositoryToken(Promotion),
+    );
     auditService = module.get<AuditEventService>(AuditEventService);
   });
 
@@ -114,9 +125,9 @@ describe('FavoriteService', () => {
   it('throws PROMOTION_NOT_FOUND when promotion missing', async () => {
     (promotionRepo.findOne as jest.Mock).mockResolvedValue(null);
 
-    await expect(service.addFavorite('user-1', 'promo-x')).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
+    await expect(
+      service.addFavorite('user-1', 'promo-x'),
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 
   it('throws PROMOTION_EXPIRED when promotion expired', async () => {
@@ -127,11 +138,11 @@ describe('FavoriteService', () => {
 
     (promotionRepo.findOne as jest.Mock).mockResolvedValue(promotion);
 
-    await expect(service.addFavorite('user-1', 'promo-1')).rejects.toMatchObject(
-      {
-        response: { errorCode: ErrorCode.PROMOTION_EXPIRED },
-      },
-    );
+    await expect(
+      service.addFavorite('user-1', 'promo-1'),
+    ).rejects.toMatchObject({
+      response: { errorCode: ErrorCode.PROMOTION_EXPIRED },
+    });
   });
 
   it('removes favorite and logs audit event', async () => {
@@ -188,22 +199,25 @@ describe('FavoriteService', () => {
     } as Promotion;
 
     const favoritesQb = createQueryBuilderMock();
-    favoritesQb.getManyAndCount.mockResolvedValue([
-      [
-        { promotion: activePromotion },
-        { promotion: expiredPromotion },
-      ],
-      2,
+    favoritesQb.getMany.mockResolvedValue([
+      { promotion: activePromotion },
+      { promotion: expiredPromotion },
     ]);
 
     const totalsQb = createQueryBuilderMock();
-    totalsQb.getRawOne.mockResolvedValue({ total: 15 });
+    totalsQb.getRawOne.mockResolvedValue({
+      totalFavorites: '2',
+      totalPotentialRewards: '15',
+    });
 
     (favoriteRepo.createQueryBuilder as jest.Mock)
       .mockReturnValueOnce(favoritesQb)
       .mockReturnValueOnce(totalsQb);
 
-    const result = await service.listFavorites('user-1', { page: 1, limit: 10 });
+    const result = await service.listFavorites('user-1', {
+      page: 1,
+      limit: 10,
+    });
 
     expect(result.active).toHaveLength(1);
     expect(result.expired).toHaveLength(1);
@@ -213,7 +227,7 @@ describe('FavoriteService', () => {
 
   it('throws DATABASE_ERROR on query failure', async () => {
     const favoritesQb = createQueryBuilderMock();
-    favoritesQb.getManyAndCount.mockRejectedValue(
+    favoritesQb.getMany.mockRejectedValue(
       new QueryFailedError('SELECT', [], new Error('fail')),
     );
     (favoriteRepo.createQueryBuilder as jest.Mock).mockReturnValue(favoritesQb);

@@ -1,4 +1,5 @@
-process.env.DB_DATABASE = process.env.DB_DATABASE || 'src/database/sqlite.test.db';
+process.env.DB_DATABASE =
+  process.env.DB_DATABASE || 'src/database/sqlite.test.db';
 
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -53,6 +54,12 @@ describe('PromotionController (e2e)', () => {
 
     const userRepo = dataSource.getRepository(User);
     const promotionRepo = dataSource.getRepository(Promotion);
+  const favoriteRepo = dataSource.getRepository(Favorite);
+  const auditRepo = dataSource.getRepository(AuditEvent);
+
+  // Clear child tables first to avoid foreign key violations when reseeding
+  await favoriteRepo.clear();
+  await auditRepo.clear();
 
     await userRepo.clear();
     await promotionRepo.clear();

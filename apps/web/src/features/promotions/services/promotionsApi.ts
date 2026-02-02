@@ -1,13 +1,24 @@
 import { api } from "@/services/api";
-import { ApiResponse, PromotionWithFavorite } from "@promotions-favorites/shared";
+import {
+  ApiResponse,
+  PromotionWithFavorite,
+} from "@promotions-favorites/shared";
 
-export const favoritePromotion = async (promotionId: string): Promise<ApiResponse<PromotionWithFavorite>> => {
-  const res = await api.post<ApiResponse<PromotionWithFavorite>>(`/promotions/${promotionId}/favorite`);
+export const favoritePromotion = async (
+  promotionId: string,
+): Promise<ApiResponse<PromotionWithFavorite>> => {
+  const res = await api.post<ApiResponse<PromotionWithFavorite>>(
+    `/promotions/${promotionId}/favorite`,
+  );
   return res.data;
 };
 
-export const unfavoritePromotion = async (promotionId: string): Promise<ApiResponse<PromotionWithFavorite>> => {
-  const res = await api.delete<ApiResponse<PromotionWithFavorite>>(`/promotions/${promotionId}/favorite`);
+export const unfavoritePromotion = async (
+  promotionId: string,
+): Promise<ApiResponse<PromotionWithFavorite>> => {
+  const res = await api.delete<ApiResponse<PromotionWithFavorite>>(
+    `/promotions/${promotionId}/favorite`,
+  );
   return res.data;
 };
 
@@ -28,7 +39,7 @@ export type PaginatedPromotions = {
 };
 
 export const getPromotions = async (
-  params: PromotionsQueryParams = {}
+  params: PromotionsQueryParams = {},
 ): Promise<ApiResponse<PaginatedPromotions>> => {
   const qs = new URLSearchParams();
   if (params.page) qs.set("page", String(params.page));
@@ -45,7 +56,8 @@ export const getPromotions = async (
 export const getMerchants = async (): Promise<string[]> => {
   const res = await api.get("/promotions/merchants");
   if (res && res.data) {
-    if (Array.isArray((res.data as any).data)) return (res.data as any).data as string[];
+    if (Array.isArray((res.data as any).data))
+      return (res.data as any).data as string[];
     if (Array.isArray(res.data)) return res.data as string[];
   }
   return [];
