@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class GetFavoritesQueryDto {
   @ApiPropertyOptional({ example: 1, minimum: 1 })
@@ -17,4 +17,9 @@ export class GetFavoritesQueryDto {
   @Min(1)
   @Max(100)
   limit?: number;
+
+  @ApiPropertyOptional({ description: 'Cursor in the format <expiresAt>|<promotionId>' })
+  @IsOptional()
+  @IsString()
+  cursor?: string;
 }

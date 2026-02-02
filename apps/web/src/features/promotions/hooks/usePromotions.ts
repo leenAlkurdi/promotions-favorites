@@ -1,11 +1,10 @@
 "use client";
-import { useQuery } from '@/lib/query';
-import { getPromotions, PaginatedPromotions, PromotionsQueryParams } from "@/services/promotionsApi";
-import { Promotion } from '@promotions-favorites/shared';
+import { useQuery } from "@/lib/query";
+import { getPromotions, PaginatedPromotions, PromotionsQueryParams } from "../services/promotionsApi";
 
 export function usePromotions(filters: PromotionsQueryParams = {}) {
   return useQuery<PaginatedPromotions, Error>({
-    queryKey: ['promotions', filters],
+    queryKey: ["promotions", filters],
     queryFn: async () => {
       const res = await getPromotions(filters);
       if (!res?.data) {

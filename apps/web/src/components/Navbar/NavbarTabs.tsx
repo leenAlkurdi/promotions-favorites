@@ -14,6 +14,7 @@ export default function NavbarTabs({ vertical = false, className = "", onItemCli
     const pathname = usePathname();
     const { t } = useTranslation();
     const isFavorites = pathname?.startsWith("/favorites");
+    const isPromotions = pathname?.startsWith("/promotions") || (!isFavorites && pathname === "/");
 
     const containerClass = vertical
         ? `flex flex-col gap-3 ${className}`
@@ -28,8 +29,8 @@ export default function NavbarTabs({ vertical = false, className = "", onItemCli
     return (
         <div role="tablist" className={containerClass}>
             <NavLink
-                href="/"
-                className={`${baseTab} ${!isFavorites ? active : inactive} flex items-center`}
+                href="/promotions"
+                className={`${baseTab} ${isPromotions ? active : inactive} flex items-center`}
                 exact
                 icon={<Tags size={16} className="mr-2" />}
                 onClick={onItemClick}

@@ -30,7 +30,7 @@ export default function Navbar() {
             const params = new URLSearchParams(window.location.search);
             q ? params.set("q", q) : params.delete("q");
             params.set("page", "1");
-            router.replace(`/?${params.toString()}`);
+                router.replace(`/promotions?${params.toString()}`);
         }, 300);
 
         return () => clearTimeout(tmr);
@@ -41,7 +41,7 @@ export default function Navbar() {
             {/* Top bar */}
             <div className="max-w-6xl mx-auto px-4 h-16 flex items-center gap-3">
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 shrink-0">
+                    <Link href="/promotions" className="flex items-center gap-2 shrink-0">
                     <Image src="/logo.png" alt="7awel" width={32} height={32} priority />
 
                     <span className="hidden sm:inline font-semibold text-primary text-lg">

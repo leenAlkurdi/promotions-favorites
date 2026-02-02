@@ -120,37 +120,55 @@ export class FavoriteService {
 		try {
 			this.validateQuery(query);
 
-			const page = query.page ?? PAGINATION_DEFAULTS.PAGE;
 			const limit = Math.min(
 				query.limit ?? PAGINATION_DEFAULTS.LIMIT,
 				PAGINATION_DEFAULTS.MAX_LIMIT,
 			);
-			const offset = (page - 1) * limit;
+			const cursor = query.cursor ? this.parseCursor(query.cursor) : null;
+			const now = Date.now();
 
 			const favoritesQb = this.favoriteRepo
 				.createQueryBuilder('favorite')
 				.innerJoinAndSelect('favorite.promotion', 'promotion')
 				.where('favorite.userId = :userId', { userId })
 				.orderBy('promotion.expiresAt', 'ASC')
-				.skip(offset)
-				.take(limit);
+				.addOrderBy('promotion.id', 'ASC')
+				.take(limit + 1);
 
-			const [favorites, totalFavorites] = await favoritesQb.getManyAndCount();
-			const now = Date.now();
+			if (cursor) {
+				favoritesQb.andWhere(
+					'(promotion.expiresAt > :cursorDate OR (promotion.expiresAt = :cursorDate AND promotion.id > :cursorId))',
+					{
+						cursorDate: cursor.expiresAt,
+						cursorId: cursor.id,
+					},
+				);
+			}
 
-			const totals = await this.favoriteRepo
+			const favorites = await favoritesQb.getMany();
+
+			const aggregates = await this.favoriteRepo
 				.createQueryBuilder('favorite')
 				.innerJoin('favorite.promotion', 'promotion')
-				.select('COALESCE(SUM(promotion.rewardAmount), 0)', 'total')
 				.where('favorite.userId = :userId', { userId })
-				.andWhere('promotion.expiresAt >= :now', { now: new Date(now) })
-				.getRawOne<{ total: string | number }>();
+				.select('COUNT(*)', 'totalFavorites')
+				.addSelect(
+					'COALESCE(SUM(CASE WHEN promotion.expiresAt >= :now THEN promotion.rewardAmount ELSE 0 END), 0)',
+					'totalPotentialRewards',
+				)
+				.setParameter('now', new Date(now))
+				.getRawOne<{ totalFavorites: string | number; totalPotentialRewards: string | number }>();
 
-			const totalPotentialRewards = Number(totals?.total ?? 0);
+			const totalFavorites = Number(aggregates?.totalFavorites ?? 0);
+			const totalPotentialRewards = Number(aggregates?.totalPotentialRewards ?? 0);
+
+			const hasMore = favorites.length > limit;
+			const pageFavorites = hasMore ? favorites.slice(0, limit) : favorites;
+
 			const active: PromotionWithFavorite[] = [];
 			const expired: PromotionWithFavorite[] = [];
 
-			for (const favorite of favorites) {
+			for (const favorite of pageFavorites) {
 				const promotion = favorite.promotion;
 				const mapped = this.mapPromotion(promotion, true);
 				const isExpired = new Date(promotion.expiresAt).getTime() < now;
@@ -161,9 +179,8 @@ export class FavoriteService {
 				}
 			}
 
-			const hasNextPage = offset + favorites.length < totalFavorites;
-			const lastFavorite = favorites.at(-1);
-			const nextCursor = hasNextPage && lastFavorite?.promotion
+			const lastFavorite = pageFavorites.at(-1);
+			const nextCursor = hasMore && lastFavorite?.promotion
 				? `${new Date(lastFavorite.promotion.expiresAt).toISOString()}|${lastFavorite.promotion.id}`
 				: null;
 
@@ -171,7 +188,7 @@ export class FavoriteService {
 				active,
 				expired,
 				meta: {
-					page,
+					page: query.page ?? PAGINATION_DEFAULTS.PAGE,
 					limit,
 					totalFavorites,
 					totalPotentialRewards,
@@ -206,6 +223,21 @@ export class FavoriteService {
 				errorCode: ErrorCode.INVALID_PAGINATION,
 			});
 		}
+
+		if (query.cursor) {
+			const parts = query.cursor.split('|');
+			if (parts.length !== 2 || !parts[0] || !parts[1] || isNaN(Date.parse(parts[0]))) {
+				throw new BadRequestException({
+					message: 'Invalid cursor value',
+					errorCode: ErrorCode.INVALID_PAGINATION,
+				});
+			}
+		}
+	}
+
+	private parseCursor(cursor: string): { expiresAt: Date; id: string } {
+		const [expiresAtRaw, id] = cursor.split('|');
+		return { expiresAt: new Date(expiresAtRaw), id };
 	}
 
 	private async findPromotionOrThrow(promotionId: string): Promise<Promotion> {

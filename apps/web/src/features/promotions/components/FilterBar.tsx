@@ -3,7 +3,7 @@
 import { SlidersHorizontal } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getMerchants } from "@/services/promotionsApi";
+import { getMerchants } from "../services/promotionsApi";
 
 type Filters = {
   merchant?: string;
@@ -24,16 +24,13 @@ export default function FilterBar({
   const router = useRouter();
 
   const [merchant, setMerchant] = useState(initial.merchant ?? "");
-  const [expiresBefore, setExpiresBefore] = useState(
-    initial.expiresBefore ?? ""
-  );
+  const [expiresBefore, setExpiresBefore] = useState(initial.expiresBefore ?? "");
   const [merchantsList, setMerchantsList] = useState<string[]>(merchants);
   const [open, setOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState<boolean>(
     typeof window !== "undefined" ? window.innerWidth >= 640 : true
   );
 
-  /* ------------------ Load merchants ------------------ */
   useEffect(() => {
     let mounted = true;
 
@@ -48,9 +45,8 @@ export default function FilterBar({
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [merchants]);
 
-  /* ------------------ Detect screen size ------------------ */
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 640);
     handleResize();
@@ -58,7 +54,6 @@ export default function FilterBar({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  /* ------------------ Apply filters ------------------ */
   const applyFilters = () => {
     const filters: Filters = {
       merchant: merchant || undefined,
@@ -71,20 +66,17 @@ export default function FilterBar({
       typeof window !== "undefined" ? window.location.search : ""
     );
 
-    if (filters.merchant)
-      params.set("merchant", filters.merchant);
+    if (filters.merchant) params.set("merchant", filters.merchant);
     else params.delete("merchant");
 
-    if (filters.expiresBefore)
-      params.set("expiresBefore", filters.expiresBefore);
+    if (filters.expiresBefore) params.set("expiresBefore", filters.expiresBefore);
     else params.delete("expiresBefore");
 
     params.set("page", "1");
 
-    router.replace(`/?${params.toString()}`);
+    router.replace(`/promotions?${params.toString()}`);
   };
 
-  /* ------------------ Desktop auto-apply ------------------ */
   useEffect(() => {
     if (!isDesktop) return;
     const t = setTimeout(() => applyFilters(), 300);
@@ -93,15 +85,11 @@ export default function FilterBar({
 
   return (
     <>
-      {/* ================= Desktop Layout ================= */}
       <div className="hidden sm:flex items-center justify-between mb-5">
-        {/* Left: Title */}
         <div>
-          <div className="text-lg font-medium">Promotions</div>
           <div className="text-sm text-textMuted">Filter promotions</div>
         </div>
 
-        {/* Right: Filters group */}
         <div className="flex items-center gap-2">
           <div className="h-9 w-9 flex items-center justify-center rounded-md bg-input text-textMuted">
             <SlidersHorizontal size={18} />
@@ -138,7 +126,6 @@ export default function FilterBar({
         </div>
       </div>
 
-      {/* ================= Mobile Layout ================= */}
       <div className="sm:hidden mb-5">
         <button
           type="button"
@@ -150,16 +137,13 @@ export default function FilterBar({
         </button>
       </div>
 
-      {/* ================= Mobile Bottom Sheet ================= */}
       {open && (
         <div className="fixed inset-0 z-50">
-          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setOpen(false)}
           />
 
-          {/* Sheet */}
           <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4 space-y-4 max-h-[80vh] overflow-auto">
             <div className="flex items-center justify-between">
               <span className="font-medium">Filters</span>
@@ -169,9 +153,7 @@ export default function FilterBar({
             </div>
 
             <div className="space-y-3">
-              <label className="block text-sm text-textMuted">
-                Merchant
-              </label>
+              <label className="block text-sm text-textMuted">Merchant</label>
               <select
                 value={merchant}
                 onChange={(e) => setMerchant(e.target.value)}
@@ -185,9 +167,7 @@ export default function FilterBar({
                 ))}
               </select>
 
-              <label className="block text-sm text-textMuted">
-                Expiry before
-              </label>
+              <label className="block text-sm text-textMuted">Expiry before</label>
               <input
                 type="date"
                 value={expiresBefore}

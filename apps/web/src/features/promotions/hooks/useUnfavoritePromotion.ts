@@ -1,24 +1,21 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { unfavoritePromotion } from "@/services/promotionsApi";
-import { mapErrorToI18n } from '@/lib/errorMapper';
-import { useTranslation } from 'next-i18next';
+import { unfavoritePromotion } from "../services/promotionsApi";
+import { mapErrorToI18n } from "@/lib/errorMapper";
 
 export function useUnfavoritePromotion() {
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: unfavoritePromotion,
     onMutate: async (promotionId: string) => {
-      console.debug('[useUnfavoritePromotion] onMutate', promotionId);
-      await queryClient.cancelQueries({ queryKey: ['promotions'] });
-      await queryClient.cancelQueries({ queryKey: ['favorites'] });
+      console.debug("[useUnfavoritePromotion] onMutate", promotionId);
+      await queryClient.cancelQueries({ queryKey: ["promotions"] });
+      await queryClient.cancelQueries({ queryKey: ["favorites"] });
 
-const previousPromotions = queryClient.getQueriesData({ queryKey: ['promotions'] });
-const previousFavorites = queryClient.getQueriesData({ queryKey: ['favorites'] });
+      const previousPromotions = queryClient.getQueriesData({ queryKey: ["promotions"] });
+      const previousFavorites = queryClient.getQueriesData({ queryKey: ["favorites"] });
 
-      // optimistic: mark isFavorite = false
       previousPromotions.forEach(([key]) => {
         queryClient.setQueryData(key as any, (old: any) => {
           if (!old || (!Array.isArray(old) && !old.items)) return old;
@@ -49,13 +46,15 @@ const previousFavorites = queryClient.getQueriesData({ queryKey: ['favorites'] }
       return { previousPromotions, previousFavorites };
     },
     onError: async (err: any, _vars, context: any) => {
-      console.debug('[useUnfavoritePromotion] onError', err, context);
+      console.debug("[useUnfavoritePromotion] onError", err, context);
       const mapped = mapErrorToI18n(err);
       try {
-        const mod = await import('@/lib/ToastProvider');
+        const mod = await import("@/lib/ToastProvider");
         const toast = mod.useToast();
         toast.error(mapped.key, { traceId: err?.traceId });
-      } catch (_) {}
+      } catch (_) {
+        // ignore toast import errors
+      }
 
       if (context?.previousPromotions) {
         context.previousPromotions.forEach(([key, data]: any) => {
@@ -69,14 +68,16 @@ const previousFavorites = queryClient.getQueriesData({ queryKey: ['favorites'] }
       }
     },
     onSuccess: async (res: any) => {
-      console.debug('[useUnfavoritePromotion] onSuccess', res);
+      console.debug("[useUnfavoritePromotion] onSuccess", res);
       try {
-        const mod = await import('@/lib/ToastProvider');
+        const mod = await import("@/lib/ToastProvider");
         const toast = mod.useToast();
-        toast.success('toasts.unfavorited', { traceId: res?.traceId });
-      } catch (_) {}
-      queryClient.invalidateQueries({ queryKey: ['promotions'] });
-      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+        toast.success("toasts.unfavorited", { traceId: res?.traceId });
+      } catch (_) {
+        // ignore toast import errors
+      }
+      queryClient.invalidateQueries({ queryKey: ["promotions"] });
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
   });
 }

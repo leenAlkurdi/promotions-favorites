@@ -1,4 +1,4 @@
-export default function SkeletonPromotionCard() {
+export function CardSkeleton() {
   return (
     <div role="status" aria-live="polite" className="animate-pulse bg-white rounded-lg shadow-sm overflow-hidden">
       <div className="h-44 w-full bg-gray-200" />

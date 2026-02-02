@@ -1,11 +1,15 @@
 import { PromotionWithFavorite } from "../types";
 
-export interface FavoritesResponse {
-  items: PromotionWithFavorite[];
+export interface FavoritesResponseMeta {
   page: number;
   limit: number;
-  total: number;
   totalFavorites: number;
   totalPotentialRewards: number;
-  nextPage?: number;
+  nextPageCursor: string | null;
+}
+
+export interface FavoritesResponse {
+  active: PromotionWithFavorite[];
+  expired: PromotionWithFavorite[];
+  meta: FavoritesResponseMeta;
 }
